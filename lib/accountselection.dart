@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:school/dashboard.dart';
 import 'package:school/fees.dart';
+import 'package:school/principle/dashboard.dart';
 import 'package:school/teacher/addHomework.dart';
 import 'package:school/teacher/menu.dart';
 
@@ -116,7 +117,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen>
     with SingleTickerProviderStateMixin {
-       bool _rememberMe = false;
+  bool _rememberMe = false;
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
@@ -139,6 +140,7 @@ class _SignInScreenState extends State<SignInScreen>
     _controller.dispose();
     super.dispose();
   }
+
   void navigateToRoleScreen() {
     Widget nextScreen;
     if (widget.role == 'Student') {
@@ -146,7 +148,7 @@ class _SignInScreenState extends State<SignInScreen>
     } else if (widget.role == 'Teacher') {
       nextScreen = Menu();
     } else {
-      nextScreen = AddHomeworkScreen();
+      nextScreen = TeacherDashboard();
     }
 
     Navigator.pushReplacement(

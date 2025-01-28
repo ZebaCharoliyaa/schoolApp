@@ -150,6 +150,7 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: DropdownButton<String>(
+              dropdownColor: Colors.deepPurple,
               value: _selectedStandard,
               hint: Text('Select Class', style: TextStyle(color: Colors.white)),
               onChanged: (String? newValue) {
@@ -165,7 +166,7 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
                       style: TextStyle(
                           color: _selectedStandard == value
                               ? Colors.white
-                              : Colors.deepPurple)),
+                              : Colors.white)),
                 );
               }).toList(),
             ),

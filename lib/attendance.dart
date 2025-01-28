@@ -11,16 +11,56 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final List<String> academicYears = ['2018-19', '2019-20', '2020-21'];
   String selectedAcademicYear = '2020-21';
   final List<Map<String, dynamic>> monthsAttendance = [
-    {'month': 'APR', 'present': 23, 'absent': 3, 'leave': 0},
-    {'month': 'MAY', 'present': 24, 'absent': 0, 'leave': 3},
-    {'month': 'JUN', 'present': 25, 'absent': 0, 'leave': 1},
-    {'month': 'JUL', 'present': 26, 'absent': 0, 'leave': 0},
-    {'month': 'AUG', 'present': 23, 'absent': 3, 'leave': 0},
-    {'month': 'SEP', 'present': 23, 'absent': 3, 'leave': 0},
-    {'month': 'OCT', 'present': 23, 'absent': 3, 'leave': 0},
-    {'month': 'NOV', 'present': 23, 'absent': 3, 'leave': 0},
-    {'month': 'DEC', 'present': 23, 'absent': 3, 'leave': 0},
-    {'month': 'JAN', 'present': 23, 'absent': 3, 'leave': 0},
+    {
+      'month': 'APR',
+      'present': 23,
+      'absent': 3,
+    },
+    {
+      'month': 'MAY',
+      'present': 24,
+      'absent': 0,
+    },
+    {
+      'month': 'JUN',
+      'present': 25,
+      'absent': 0,
+    },
+    {
+      'month': 'JUL',
+      'present': 26,
+      'absent': 0,
+    },
+    {
+      'month': 'AUG',
+      'present': 23,
+      'absent': 3,
+    },
+    {
+      'month': 'SEP',
+      'present': 23,
+      'absent': 3,
+    },
+    {
+      'month': 'OCT',
+      'present': 23,
+      'absent': 3,
+    },
+    {
+      'month': 'NOV',
+      'present': 23,
+      'absent': 3,
+    },
+    {
+      'month': 'DEC',
+      'present': 23,
+      'absent': 3,
+    },
+    {
+      'month': 'JAN',
+      'present': 23,
+      'absent': 3,
+    },
   ];
   final List<Color> colors = [
     Colors.green.shade100,
@@ -96,7 +136,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             month: monthData['month'],
                             present: monthData['present'],
                             absent: monthData['absent'],
-                            leave: monthData['leave'],
+                            // leave: monthData['leave'],
                           ),
                         ),
                       );
@@ -124,8 +164,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     Colors.green, screenWidth),
                                 _statusWidget('Absent', monthData['absent'],
                                     Colors.red, screenWidth),
-                                _statusWidget('Leave', monthData['leave'],
-                                    Colors.blue, screenWidth),
+                                // _statusWidget('Leave', monthData['leave'],
+                                //     Colors.blue, screenWidth),
                               ],
                             ),
                           ],
@@ -173,13 +213,14 @@ class MonthlyAttendanceScreen extends StatelessWidget {
   final String month;
   final int present;
   final int absent;
-  final int leave;
+  // final int leave;
 
-  const MonthlyAttendanceScreen({super.key, 
+  const MonthlyAttendanceScreen({
+    super.key,
     required this.month,
     required this.present,
     required this.absent,
-    required this.leave,
+    // required this.leave,
   });
 
   @override
@@ -224,15 +265,15 @@ class MonthlyAttendanceScreen extends StatelessWidget {
                 itemCount: 30, // Assume 30 days for the month
                 itemBuilder: (context, index) {
                   final day = index + 1;
-                  final statuses = ['Present', 'Absent', 'Leave'];
+                  final statuses = ['Present', 'Absent'];
                   final status = statuses[index % statuses.length];
                   return Container(
                     decoration: BoxDecoration(
                       color: status == 'Present'
                           ? Colors.green.shade100
-                          : status == 'Absent'
-                              ? Colors.red.shade100
-                              : Colors.blue.shade100,
+                          // :status == 'Absent'
+                          : Colors.red.shade100,
+                      // : Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(color: Colors.grey),
                     ),
@@ -269,7 +310,7 @@ class MonthlyAttendanceScreen extends StatelessWidget {
       children: [
         _statusWidget('Present', present, Colors.green, screenWidth),
         _statusWidget('Absent', absent, Colors.red, screenWidth),
-        _statusWidget('Leave', leave, Colors.blue, screenWidth),
+        // _statusWidget('Leave', leave, Colors.blue, screenWidth),
       ],
     );
   }
