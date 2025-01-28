@@ -4,13 +4,15 @@ import 'package:school/dashboard.dart';
 import 'package:school/forgot.dart';
 
 void main() {
-  runApp(SignInApp());
+  runApp(const SignInApp());
 }
 
 class SignInApp extends StatelessWidget {
+  const SignInApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SignInScreen(),
     );
@@ -18,6 +20,8 @@ class SignInApp extends StatelessWidget {
 }
 
 class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
+
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
@@ -64,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen>
               right: 0,
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.6,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(150), // Smooth and curved
@@ -88,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Sign In",
                             style: TextStyle(
                               fontSize: 24,
@@ -96,31 +100,31 @@ class _SignInScreenState extends State<SignInScreen>
                               color: Colors.deepPurple,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           // Phone Number Input
                           TextField(
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.phone),
+                              prefixIcon: const Icon(Icons.phone),
                               labelText: 'Phone Number',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           // Password Input
                           TextField(
                             obscureText: true,
                             decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
+                              prefixIcon: const Icon(Icons.lock),
                               labelText: 'Password',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           // Forgot Password
                           Align(
                             alignment: Alignment.centerRight,
@@ -130,16 +134,16 @@ class _SignInScreenState extends State<SignInScreen>
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          forgotScreenScreen(),
+                                          const forgotScreenScreen(),
                                     ));
                               },
-                              child: Text(
+                              child: const Text(
                                 "Forgot Password?",
                                 style: TextStyle(color: Colors.deepPurple),
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           // Sign-In Button
                           SizedBox(
                             width: double.infinity,
@@ -148,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen>
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => firstpage(),
+                                      builder: (context) => const firstpage(),
                                     ));
                               },
                               style: ElevatedButton.styleFrom(
@@ -156,9 +160,9 @@ class _SignInScreenState extends State<SignInScreen>
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                               ),
-                              child: Text(
+                              child: const Text(
                                 "Sign In",
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white),

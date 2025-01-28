@@ -2,26 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:school/question.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ExaminationScreen(),
     );
   }
 }
 
 class ExaminationScreen extends StatelessWidget {
+  const ExaminationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text(
+        title: const Text(
           'Examination',
           style: TextStyle(color: Colors.white),
         ),
@@ -30,11 +34,11 @@ class ExaminationScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -45,7 +49,7 @@ class ExaminationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Examination List',
               style: TextStyle(
                 color: Colors.deepPurple,
@@ -53,10 +57,10 @@ class ExaminationScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView(
-                children: [
+                children: const [
                   ExamCard(
                     title: 'Science Basic Assessment Test',
                     duration: 'Duration: 30 Min',
@@ -117,7 +121,7 @@ class ExamCard extends StatelessWidget {
   final Color buttonColor;
   final IconData? buttonIcon;
 
-  ExamCard({
+  const ExamCard({super.key, 
     required this.title,
     required this.duration,
     this.score,
@@ -125,6 +129,7 @@ class ExamCard extends StatelessWidget {
     required this.buttonColor,
     this.buttonIcon,
   });
+  @override
   Widget build(BuildContext context) {
     return Card(
       color: score != null ? Colors.green[100] : Colors.pink[100],
@@ -138,42 +143,42 @@ class ExamCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.access_time, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
+                const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
                 Text(
                   duration,
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
             if (score != null) ...[
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 children: [
-                  Icon(Icons.check_circle, size: 16, color: Colors.green),
-                  SizedBox(width: 4),
+                  const Icon(Icons.check_circle, size: 16, color: Colors.green),
+                  const SizedBox(width: 4),
                   Text(
                     score!,
-                    style: TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.green),
                   ),
                 ],
               ),
             ],
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ExamScreen(),
+                      builder: (context) => const ExamScreen(),
                     ));
               },
               icon: buttonIcon != null
@@ -182,10 +187,10 @@ class ExamCard extends StatelessWidget {
                       size: 16,
                       color: Colors.white,
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
               label: Text(
                 buttonText,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: buttonColor,

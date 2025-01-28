@@ -15,37 +15,37 @@ import 'package:school/signIn.dart';
 class MenuScreen extends StatelessWidget {
   // Menu items data
   final List<Map<String, dynamic>> menuItems = [
-    {'icon': Icons.dashboard, 'label': 'Dashboard', 'page': firstpage()},
+    {'icon': Icons.dashboard, 'label': 'Dashboard', 'page': const firstpage()},
     {
       'icon': Icons.menu_book_sharp,
       'label': 'Home Work',
-      'page': HomeworkScreen()
+      'page': const HomeworkScreen()
     },
     {
       'icon': Icons.person_pin,
       'label': 'Attendance',
-      'page': AttendanceScreen()
+      'page': const AttendanceScreen()
     },
     {
       'icon': Icons.calendar_month_outlined,
-      'label': 'Calander',
-      'page': Calendar()
+      'label': 'Calender',
+      'page': const Calendar()
     },
-    {'icon': Icons.payment, 'label': 'Fees', 'page': FeesDetailsScreen()},
+    {'icon': Icons.payment, 'label': 'Fees', 'page': const FeesDetailsScreen()},
     {
       'icon': Icons.laptop_outlined,
       'label': 'Multimedia',
-      'page': MultimediaScreen()
+      'page': const MultimediaScreen()
     },
     {
       'icon': Icons.assignment_sharp,
       'label': 'Exammination',
-      'page': ExaminationScreen()
+      'page': const ExaminationScreen()
     },
     {
       'icon': Icons.description,
       'label': 'Report Card',
-      'page': ReportCardListScreen()
+      'page': const ReportCardListScreen()
     },
     {
       'icon': Icons.line_weight_outlined,
@@ -55,10 +55,12 @@ class MenuScreen extends StatelessWidget {
     {
       'icon': Icons.person,
       'label': 'profile',
-      'page': AnimatedStudentProfile()
+      'page': const AnimatedStudentProfile()
     },
-    {'icon': Icons.person_add, 'label': 'Add Account', 'page': SignInScreen()},
+    {'icon': Icons.person_add, 'label': 'Add Account', 'page': const SignInScreen()},
   ];
+
+   MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,7 @@ class MenuScreen extends StatelessWidget {
       backgroundColor: Colors.deepPurple,
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text(
+        title: const Text(
           "Menu",
           style: TextStyle(color: Colors.white),
         ),
@@ -75,14 +77,14 @@ class MenuScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
         actions: [
           Row(
             children: [
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment:
                     MainAxisAlignment.center, // Align to the right
@@ -97,21 +99,21 @@ class MenuScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AnimatedStudentProfile(),
+                        builder: (context) => const AnimatedStudentProfile(),
                       ));
                 },
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   backgroundImage: AssetImage("assets/images/profilepic.jpg"),
                 ),
               ),
 
-              SizedBox(width: 8), // Optional spacing for better layout
+              const SizedBox(width: 8), // Optional spacing for better layout
             ],
           ),
         ],
@@ -119,7 +121,7 @@ class MenuScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 50, right: 20, left: 20),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, // Number of items in a row
             crossAxisSpacing: 16.0,
             mainAxisSpacing: 16.0,
@@ -157,11 +159,11 @@ class MenuScreen extends StatelessWidget {
                       color: Colors.deepPurple,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   // Label below the icon
                   Text(
                     menuItems[index]['label'],
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: Colors.white),

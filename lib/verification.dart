@@ -24,7 +24,7 @@ class _VerificationState extends State<Verification> {
             right: 0,
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(150), // Smooth and curved
@@ -47,7 +47,7 @@ class _VerificationState extends State<Verification> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Forgot Password",
                           style: TextStyle(
                             fontSize: 24,
@@ -55,10 +55,10 @@ class _VerificationState extends State<Verification> {
                             color: Colors.deepPurple,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        Text("Enter OTP"),
+                        const Text("Enter OTP"),
                         // SizedBox(height: 20),
                         // // Phone Number Input
                         // TextField(
@@ -71,7 +71,7 @@ class _VerificationState extends State<Verification> {
                         //     ),
                         //   ),
                         // ),
-                        SizedBox(height: 20.0),
+                        const SizedBox(height: 20.0),
                         OtpTextField(
                           mainAxisAlignment: MainAxisAlignment.start,
                           numberOfFields: 6,
@@ -87,12 +87,12 @@ class _VerificationState extends State<Verification> {
                             print('Entered OTP: $verificationCode');
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        TextButton(onPressed: () {}, child: Text("Send Again")),
+                        TextButton(onPressed: () {}, child: const Text("Send Again")),
 
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         // Sign-In Button
                         SizedBox(
                           width: double.infinity,
@@ -101,7 +101,7 @@ class _VerificationState extends State<Verification> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Newpassword(),
+                                    builder: (context) => const Newpassword(),
                                   ));
                             },
                             style: ElevatedButton.styleFrom(
@@ -109,16 +109,16 @@ class _VerificationState extends State<Verification> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Verify",
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         // Forgot Password
                         Align(
                           alignment: Alignment.center,
@@ -128,7 +128,7 @@ class _VerificationState extends State<Verification> {
                                 context,
                               );
                             },
-                            child: Text(
+                            child: const Text(
                               "Cancle",
                               style: TextStyle(color: Colors.deepPurple),
                             ),

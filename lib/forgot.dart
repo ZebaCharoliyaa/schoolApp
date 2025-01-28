@@ -3,13 +3,15 @@ import 'package:school/verification.dart';
 // import 'package:school/home.dart';
 
 void main() {
-  runApp(forgot());
+  runApp(const forgot());
 }
 
 class forgot extends StatelessWidget {
+  const forgot({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: forgotScreenScreen(),
     );
@@ -17,6 +19,8 @@ class forgot extends StatelessWidget {
 }
 
 class forgotScreenScreen extends StatelessWidget {
+  const forgotScreenScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +34,7 @@ class forgotScreenScreen extends StatelessWidget {
             right: 0,
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(150), // Smooth and curved
@@ -53,7 +57,7 @@ class forgotScreenScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Forgot Password",
                           style: TextStyle(
                             fontSize: 24,
@@ -61,12 +65,12 @@ class forgotScreenScreen extends StatelessWidget {
                             color: Colors.deepPurple,
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         // Phone Number Input
                         TextField(
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.phone),
+                            prefixIcon: const Icon(Icons.phone),
                             labelText: 'Phone Number',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -99,7 +103,7 @@ class forgotScreenScreen extends StatelessWidget {
                         //     ),
                         //   ),
                         // ),
-                        SizedBox(height: 50),
+                        const SizedBox(height: 50),
                         // Sign-In Button
                         SizedBox(
                           width: double.infinity,
@@ -108,7 +112,7 @@ class forgotScreenScreen extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Verification(),
+                                    builder: (context) => const Verification(),
                                   ));
                               // Handle Sign-In
                             },
@@ -117,16 +121,16 @@ class forgotScreenScreen extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Generate OTP",
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         // Forgot Password
                         Align(
                           alignment: Alignment.center,
@@ -136,7 +140,7 @@ class forgotScreenScreen extends StatelessWidget {
                                 context,
                               );
                             },
-                            child: Text(
+                            child: const Text(
                               "Cancle",
                               style: TextStyle(color: Colors.deepPurple),
                             ),

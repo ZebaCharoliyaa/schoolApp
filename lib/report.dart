@@ -5,7 +5,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ReportCardListScreen(),
     );
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
 }
 
 class ReportCardListScreen extends StatelessWidget {
-  const ReportCardListScreen({Key? key}) : super(key: key);
+  const ReportCardListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class ReportCardListScreen extends StatelessWidget {
             'Report Cards',
             style: TextStyle(color: Colors.white),
           ),
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(20),
             ),
@@ -34,7 +34,7 @@ class ReportCardListScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.white,
               ))),
@@ -61,7 +61,7 @@ class ReportCardListScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => StudentProfileScreen()
+                          builder: (context) => const StudentProfileScreen()
                           // ReportCardScreen(className: classes[index]),
                           ),
                     );
@@ -95,16 +95,18 @@ final List<Color> colors = [
 ];
 
 class StudentProfileScreen extends StatelessWidget {
+  const StudentProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
         ),
-        title: Text(
+        title: const Text(
           'Class 12th',
           style: TextStyle(color: Colors.white),
         ),
@@ -114,12 +116,12 @@ class StudentProfileScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,12 +141,14 @@ class StudentProfileScreen extends StatelessWidget {
 }
 
 class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 4,
-      child: Padding(
+      child: const Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,12 +196,14 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class AttendanceSection extends StatelessWidget {
+  const AttendanceSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 4,
-      child: Padding(
+      child: const Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +229,7 @@ class AttendanceRow extends StatelessWidget {
   final String term;
   final String attendance;
 
-  AttendanceRow({required this.term, required this.attendance});
+  const AttendanceRow({super.key, required this.term, required this.attendance});
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +239,7 @@ class AttendanceRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(term),
-          Text(attendance, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(attendance, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -241,12 +247,14 @@ class AttendanceRow extends StatelessWidget {
 }
 
 class AcademicPerformanceSection extends StatelessWidget {
+  const AcademicPerformanceSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 4,
-      child: Padding(
+      child: const Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +282,7 @@ class AcademicPerformanceSection extends StatelessWidget {
 class PerformanceTable extends StatelessWidget {
   final String term;
 
-  PerformanceTable({required this.term});
+  const PerformanceTable({super.key, required this.term});
 
   @override
   Widget build(BuildContext context) {
@@ -283,12 +291,12 @@ class PerformanceTable extends StatelessWidget {
       children: [
         Text(
           term,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         Table(
           border: TableBorder.all(color: Colors.grey),
-          columnWidths: {
+          columnWidths: const {
             0: FlexColumnWidth(),
             1: FixedColumnWidth(80.0),
             2: FixedColumnWidth(80.0),
@@ -296,7 +304,7 @@ class PerformanceTable extends StatelessWidget {
           children: [
             TableRow(
               decoration: BoxDecoration(color: Colors.grey[200]),
-              children: [
+              children: const [
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text('Subject',
@@ -314,7 +322,7 @@ class PerformanceTable extends StatelessWidget {
                 ),
               ],
             ),
-            TableRow(
+            const TableRow(
               children: [
                 Padding(
                   padding: EdgeInsets.all(8.0),
@@ -332,7 +340,7 @@ class PerformanceTable extends StatelessWidget {
             ),
             TableRow(
               decoration: BoxDecoration(color: Colors.grey[100]),
-              children: [
+              children: const [
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text('Mathematics'),
@@ -347,7 +355,7 @@ class PerformanceTable extends StatelessWidget {
                 ),
               ],
             ),
-            TableRow(
+            const TableRow(
               children: [
                 Padding(
                   padding: EdgeInsets.all(8.0),
@@ -371,12 +379,14 @@ class PerformanceTable extends StatelessWidget {
 }
 
 class RemarksSection extends StatelessWidget {
+  const RemarksSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 4,
-      child: Padding(
+      child: const Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

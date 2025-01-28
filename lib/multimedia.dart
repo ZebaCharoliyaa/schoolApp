@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: MultimediaScreen(),
   ));
 }
 
 class MultimediaScreen extends StatelessWidget {
+  const MultimediaScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -20,11 +22,11 @@ class MultimediaScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
-        title: Text(
+        title: const Text(
           'Multimedia',
           style: TextStyle(color: Colors.white),
         ),
@@ -35,7 +37,7 @@ class MultimediaScreen extends StatelessWidget {
         length: 5,
         child: Column(
           children: [
-            TabBar(
+            const TabBar(
               isScrollable: true,
               labelColor: Colors.deepPurple,
               unselectedLabelColor: Colors.black,
@@ -52,10 +54,10 @@ class MultimediaScreen extends StatelessWidget {
               child: TabBarView(
                 children: [
                   MediaList(),
-                  Center(child: Text('Videos')),
-                  Center(child: Text('Images')),
-                  Center(child: Text('Documents')),
-                  Center(child: Text('Links')),
+                  const Center(child: Text('Videos')),
+                  const Center(child: Text('Images')),
+                  const Center(child: Text('Documents')),
+                  const Center(child: Text('Links')),
                 ],
               ),
             ),
@@ -101,6 +103,8 @@ class MediaList extends StatelessWidget {
     Colors.green.shade100,
     Colors.pink.shade100,
   ];
+
+   MediaList({super.key});
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -109,7 +113,7 @@ class MediaList extends StatelessWidget {
         final item = mediaItems[index];
         return Card(
           color: colors[index % colors.length],
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.white,
@@ -121,7 +125,7 @@ class MediaList extends StatelessWidget {
             ),
             title: Text(item['title']!),
             subtitle: Text(item['description']!),
-            trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
+            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
           ),
         );
       },

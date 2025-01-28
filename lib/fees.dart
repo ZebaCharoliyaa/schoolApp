@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FeesDetailsScreen extends StatefulWidget {
+  const FeesDetailsScreen({super.key});
+
   @override
   _FeesDetailsScreenState createState() => _FeesDetailsScreenState();
 }
@@ -19,7 +21,7 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -28,12 +30,12 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
         backgroundColor: Colors.deepPurple,
-        title: Text("Fees Details", style: TextStyle(color: Colors.white)),
+        title: const Text("Fees Details", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: DefaultTabController(
@@ -41,11 +43,11 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
           child: Column(
             children: [
               TabBar(
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: const TextStyle(color: Colors.deepPurple),
                 unselectedLabelColor: Colors.black,
                 controller: _tabController,
                 indicatorColor: Colors.deepPurple,
-                tabs: [
+                tabs: const [
                   Tab(text: "School Fee"),
                   Tab(text: "Exam Fee"),
                   Tab(text: "Activity Fee"),
@@ -113,7 +115,7 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
           child: ExpansionTile(
             title: Text(
               '${feeItem['month']} Fee',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
               '₹ ${feeItem['fee']}',
@@ -123,11 +125,11 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
               ),
             ),
             trailing: feeItem['paid']
-                ? Text(
+                ? const Text(
                     "Paid",
                     style: TextStyle(color: Colors.green, fontSize: 14),
                   )
-                : Text(
+                : const Text(
                     "Unpaid",
                     style: TextStyle(color: Colors.red, fontSize: 14),
                   ),
@@ -139,14 +141,14 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Total Fee: ₹ ${feeItem['fee']}'),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text('Extra Charges: ₹ ${feeItem['extra']}'),
                           Text('Late Charges: ₹ ${feeItem['lateCharges']}'),
                           Text('Discount: ${feeItem['discount']}%'),
-                          Divider(),
+                          const Divider(),
                           Text(
                             'Paid Fee: ₹ ${(feeItem['fee'] + feeItem['extra'] + feeItem['lateCharges'] - (feeItem['fee'] * feeItem['discount'] / 100)).toStringAsFixed(2)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -163,7 +165,7 @@ class _FeesDetailsScreenState extends State<FeesDetailsScreen>
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: FeesDetailsScreen(),
   ));

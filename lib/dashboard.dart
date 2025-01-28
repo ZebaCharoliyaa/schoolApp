@@ -8,7 +8,7 @@ class firstpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Dashboard',
           style: TextStyle(color: Colors.white),
         ),
@@ -22,11 +22,11 @@ class firstpage extends StatelessWidget {
                     builder: (context) => MenuScreen(),
                   ));
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.menu,
               color: Colors.white,
             )),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -42,15 +42,15 @@ class firstpage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Notice Board',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Container(
+                  const SizedBox(height: 16),
+                  SizedBox(
                     height: 150,
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -80,8 +80,8 @@ class firstpage extends StatelessWidget {
 
                         return Container(
                           width: 200, // Adjust width for horizontal scrolling
-                          margin: EdgeInsets.only(right: 10),
-                          padding: EdgeInsets.all(10),
+                          margin: const EdgeInsets.only(right: 10),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: colors[index % colors.length],
                             border: Border.all(color: Colors.grey),
@@ -100,11 +100,11 @@ class firstpage extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   notices[index]['text']!,
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -125,17 +125,17 @@ class firstpage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Homework',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: 3, // Replace with actual homework data count
                     itemBuilder: (context, index) {
                       return Card(
@@ -145,12 +145,12 @@ class firstpage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ListTile(
-                          leading: Icon(
+                          leading: const Icon(
                             Icons.book,
                             color: Colors.deepPurple,
                           ),
                           title: Text('Homework Title ${index + 1}'),
-                          subtitle: Text('Subject details and deadlines'),
+                          subtitle: const Text('Subject details and deadlines'),
                         ),
                       );
                     },

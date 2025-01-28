@@ -4,13 +4,15 @@ import 'package:school/signIn.dart';
 // import 'package:school/exam.dart';
 
 void main() {
-  runApp(Exam());
+  runApp(const Exam());
 }
 
 class Exam extends StatelessWidget {
+  const Exam({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Splash3(),
     );
@@ -18,6 +20,8 @@ class Exam extends StatelessWidget {
 }
 
 class Splash3 extends StatefulWidget {
+  const Splash3({super.key});
+
   @override
   _Splash3State createState() => _Splash3State();
 }
@@ -54,7 +58,7 @@ class _Splash3State extends State<Splash3> with SingleTickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Text widget
-            Text(
+            const Text(
               "Mark Homework \n as completed",
               style: TextStyle(
                 fontSize: 20,
@@ -62,7 +66,7 @@ class _Splash3State extends State<Splash3> with SingleTickerProviderStateMixin {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Animated Image widget
             ScaleTransition(
               scale: _animation,
@@ -72,18 +76,18 @@ class _Splash3State extends State<Splash3> with SingleTickerProviderStateMixin {
                 height: 300,
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             // Button with animation
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(_createRoute());
               },
               style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(20),
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(20),
                 backgroundColor: Colors.deepPurple,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.white,
                 size: 24,
@@ -98,7 +102,7 @@ class _Splash3State extends State<Splash3> with SingleTickerProviderStateMixin {
   // Function to create a custom page route with animation
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => SignInScreen(),
+      pageBuilder: (context, animation, secondaryAnimation) => const SignInScreen(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0); // Slide in from the right
         const end = Offset.zero;

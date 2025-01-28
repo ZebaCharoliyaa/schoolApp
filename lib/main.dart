@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:school/accountselection.dart';
+
 // import 'package:school/homework.dart';
 // import 'package:school/dashboard.dart';
 // import 'package:school/fees.dart';
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: Splash1(),
+      home: RoleSelectionApp(),
     );
   }
 }
