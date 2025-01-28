@@ -24,6 +24,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen>
     with SingleTickerProviderStateMixin {
+  bool _rememberMe = false;
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
 
@@ -101,8 +102,8 @@ class _SignInScreenState extends State<SignInScreen>
                           TextField(
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.phone),
-                              labelText: 'Phone Number',
+                              prefixIcon: Icon(Icons.email_outlined),
+                              labelText: 'Student Id',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -121,23 +122,19 @@ class _SignInScreenState extends State<SignInScreen>
                             ),
                           ),
                           SizedBox(height: 10),
-                          // Forgot Password
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          forgotScreenScreen(),
-                                    ));
-                              },
-                              child: Text(
-                                "Forgot Password?",
-                                style: TextStyle(color: Colors.deepPurple),
+                          
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value!;
+                                  });
+                                },
                               ),
-                            ),
+                              Text('Remember me'),
+                            ],
                           ),
                           SizedBox(height: 20),
                           // Sign-In Button
