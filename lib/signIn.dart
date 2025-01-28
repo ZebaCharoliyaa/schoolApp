@@ -28,6 +28,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen>
     with SingleTickerProviderStateMixin {
+  bool _rememberMe = false;
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
 
@@ -105,7 +106,7 @@ class _SignInScreenState extends State<SignInScreen>
                           TextField(
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.phone),
+                              prefixIcon: Icon(Icons.phone),
                               labelText: 'Phone Number',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -124,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen>
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           // Forgot Password
                           Align(
                             alignment: Alignment.centerRight,
@@ -134,10 +135,10 @@ class _SignInScreenState extends State<SignInScreen>
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const forgotScreenScreen(),
+                                          forgotScreenScreen(),
                                     ));
                               },
-                              child: const Text(
+                              child: Text(
                                 "Forgot Password?",
                                 style: TextStyle(color: Colors.deepPurple),
                               ),
