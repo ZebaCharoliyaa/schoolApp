@@ -28,8 +28,6 @@ class Menu extends StatelessWidget {
     },
     {'icon': Icons.person_pin, 'label': 'Attendance', 'page': AttendanceApp()},
     {'icon': Icons.payment, 'label': 'Fees', 'page': ()},
-    {'icon': Icons.laptop_outlined, 'label': 'Multimedia', 'page': ()},
-    {'icon': Icons.assignment_sharp, 'label': 'Exammination', 'page': ()},
     {'icon': Icons.description, 'label': 'Report Card', 'page': ()},
     {'icon': Icons.line_weight_outlined, 'label': 'Notice Board', 'page': ()},
     {

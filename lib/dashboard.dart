@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:school/accountselection.dart';
 import 'package:school/attendance.dart';
-import 'package:school/calander.dart';
-import 'package:school/examination.dart';
 import 'package:school/fees.dart';
 import 'package:school/homework.dart';
-import 'package:school/menu.dart';
-import 'package:school/multimedia.dart';
 import 'package:school/naticeBoard.dart';
 import 'package:school/profile.dart';
 import 'package:school/report.dart';
-import 'package:school/signIn.dart';
-import 'package:school/splash2.dart';
+
 
 class firstpage extends StatelessWidget {
   const firstpage({super.key});
@@ -90,30 +86,8 @@ class firstpage extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.laptop_outlined),
-              title: Text('Multimedia'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MultimediaScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.assignment_sharp),
-              title: Text('Examination'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExaminationScreen(),
-                  ),
-                );
-              },
-            ),
+           
+            
             ListTile(
               leading: Icon(Icons.description),
               title: Text('Report Card'),
@@ -138,18 +112,7 @@ class firstpage extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.calendar_month_outlined),
-              title: Text('Calender'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Calendar(),
-                  ),
-                );
-              },
-            ),
+           
             ListTile(
               leading: Icon(Icons.person),
               title: Text('Profile'),
@@ -169,7 +132,7 @@ class firstpage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SignInScreen(),
+                    builder: (context) => RoleSelectionApp(),
                   ),
                 );
               },
@@ -181,7 +144,7 @@ class firstpage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SignInScreen(),
+                    builder: (context) => RoleSelectionApp(),
                   ),
                 );
               },

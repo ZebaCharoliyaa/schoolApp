@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:school/dashboard.dart';
-import 'package:school/teacher/dashboard.dart';
 import 'package:school/fees.dart';
 import 'package:school/teacher/addHomework.dart';
 import 'package:school/teacher/menu.dart';
