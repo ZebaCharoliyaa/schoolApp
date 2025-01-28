@@ -24,7 +24,7 @@ class _NewpasswordState extends State<Newpassword> {
             right: 0,
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(150), // Smooth and curved
@@ -47,7 +47,7 @@ class _NewpasswordState extends State<Newpassword> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Forgot Password",
                           style: TextStyle(
                             fontSize: 24,
@@ -55,11 +55,11 @@ class _NewpasswordState extends State<Newpassword> {
                             color: Colors.deepPurple,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        Text("Create New Passsword"),
-                        SizedBox(height: 10),
+                        const Text("Create New Passsword"),
+                        const SizedBox(height: 10),
                         // Phone Number Input
                         TextField(
                           keyboardType: TextInputType.visiblePassword,
@@ -71,11 +71,11 @@ class _NewpasswordState extends State<Newpassword> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        Text("Confirm New Password"),
-                        SizedBox(height: 10),
+                        const Text("Confirm New Password"),
+                        const SizedBox(height: 10),
                         // Password Input
                         TextField(
                             obscureText: true,
@@ -88,7 +88,7 @@ class _NewpasswordState extends State<Newpassword> {
                               // ),
                             )),
 
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         // Sign-In Button
                         SizedBox(
                           width: double.infinity,
@@ -101,16 +101,16 @@ class _NewpasswordState extends State<Newpassword> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Submit",
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         // Forgot Password
                         Align(
                           alignment: Alignment.center,
@@ -119,10 +119,10 @@ class _NewpasswordState extends State<Newpassword> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => SignInScreen(),
+                                    builder: (context) => const SignInScreen(),
                                   ));
                             },
-                            child: Text(
+                            child: const Text(
                               "Cancle",
                               style: TextStyle(color: Colors.deepPurple),
                             ),

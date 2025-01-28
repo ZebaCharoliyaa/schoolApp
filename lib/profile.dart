@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AnimatedStudentProfile extends StatefulWidget {
-  const AnimatedStudentProfile({Key? key}) : super(key: key);
+  const AnimatedStudentProfile({super.key});
 
   @override
   State<AnimatedStudentProfile> createState() => _AnimatedStudentProfileState();

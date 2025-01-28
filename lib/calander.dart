@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Calendar(),
     );
@@ -16,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class Calendar extends StatefulWidget {
+  const Calendar({super.key});
+
   @override
   _CalendarState createState() => _CalendarState();
 }
@@ -64,7 +68,7 @@ class _CalendarState extends State<Calendar> {
 
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -73,11 +77,11 @@ class _CalendarState extends State<Calendar> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
-        title: Text(
+        title: const Text(
           "Calendar",
           style: TextStyle(color: Colors.white),
         ),
@@ -89,7 +93,7 @@ class _CalendarState extends State<Calendar> {
             padding: const EdgeInsets.only(right: 10),
             child: DropdownButton<int>(
               value: selectedYear,
-              icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+              icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
               dropdownColor: Colors.deepPurple,
               items: List.generate(
                 10,
@@ -97,7 +101,7 @@ class _CalendarState extends State<Calendar> {
                   value: DateTime.now().year - 5 + index,
                   child: Text(
                     "${DateTime.now().year - 5 + index}",
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),
@@ -117,7 +121,7 @@ class _CalendarState extends State<Calendar> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_back_ios),
+                  icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
                     final newMonth =
                         selectedMonth == 1 ? 12 : selectedMonth - 1;
@@ -127,11 +131,11 @@ class _CalendarState extends State<Calendar> {
                   },
                 ),
                 Text(
-                  "${DateFormat('MMMM yyyy').format(DateTime(selectedYear, selectedMonth))}",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  DateFormat('MMMM yyyy').format(DateTime(selectedYear, selectedMonth)),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(Icons.arrow_forward_ios),
+                  icon: const Icon(Icons.arrow_forward_ios),
                   onPressed: () {
                     final newMonth =
                         selectedMonth == 12 ? 1 : selectedMonth + 1;
@@ -162,7 +166,7 @@ class _CalendarState extends State<Calendar> {
           Expanded(
             flex: 3,
             child: ListView.builder(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               itemCount: events.length,
               itemBuilder: (context, index) {
                 final event = events[index];
@@ -188,7 +192,7 @@ class CalendarGrid extends StatefulWidget {
   final int selectedMonth;
   final Function(int) onDateSelected;
 
-  CalendarGrid({
+  const CalendarGrid({super.key, 
     required this.selectedDay,
     required this.daysInMonth,
     required this.selectedYear,
@@ -239,7 +243,7 @@ class _CalendarGridState extends State<CalendarGrid> {
                       child: Center(
                         child: Text(
                           day,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ))
@@ -249,10 +253,10 @@ class _CalendarGridState extends State<CalendarGrid> {
         // Calendar dates grid
         Expanded(
           child: GridView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
               mainAxisSpacing: 8,
               crossAxisSpacing: 8,
@@ -302,7 +306,7 @@ class EventCard extends StatefulWidget {
   final String name;
   final String color;
 
-  EventCard({
+  const EventCard({super.key, 
     required this.date,
     required this.type,
     required this.name,
@@ -330,8 +334,8 @@ class _EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: getCardColor(widget.color),
         borderRadius: BorderRadius.circular(10),
@@ -343,23 +347,23 @@ class _EventCardState extends State<EventCard> {
             radius: 20,
             child: Text(
               widget.date,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 widget.name,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
                 widget.type,
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ],
           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(HomeworkScreen());
+  runApp(const HomeworkScreen());
 }
 
 class HomeworkScreen extends StatefulWidget {
+  const HomeworkScreen({super.key});
+
   @override
   _HomeworkScreenState createState() => _HomeworkScreenState();
 }
@@ -41,21 +43,21 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(20),
             ),
           ),
           backgroundColor: Colors.deepPurple,
           elevation: 0,
-          title: Text(
+          title: const Text(
             'Homework',
             style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             ),
@@ -74,8 +76,8 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               // Notice Board Section
               Container(
                 // color: Colors.deepPurple,
-                padding: EdgeInsets.all(16),
-                child: Row(
+                padding: const EdgeInsets.all(16),
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
@@ -108,7 +110,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               // Homework List Section
               Expanded(
                 child: ListView.builder(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   itemCount: homeworkList.length,
                   itemBuilder: (context, index) {
                     return HomeworkCard(
@@ -141,7 +143,7 @@ class HomeworkCard extends StatelessWidget {
   final Color color;
   final VoidCallback onDelete;
 
-  HomeworkCard({
+  const HomeworkCard({super.key, 
     required this.subject,
     required this.task,
     required this.time,
@@ -152,8 +154,8 @@ class HomeworkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         // color: Colors.white,
         color: color,
@@ -162,7 +164,7 @@ class HomeworkCard extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
             blurRadius: 6,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -171,27 +173,27 @@ class HomeworkCard extends StatelessWidget {
         children: [
           Text(
             subject,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             task,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: Colors.black87,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 time,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
                 ),
@@ -199,10 +201,10 @@ class HomeworkCard extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red, size: 20),
+                    icon: const Icon(Icons.delete, color: Colors.red, size: 20),
                     onPressed: onDelete, // Delete functionality
                   ),
-                  Icon(
+                  const Icon(
                     Icons.arrow_forward_ios,
                     size: 14,
                     color: Colors.grey,

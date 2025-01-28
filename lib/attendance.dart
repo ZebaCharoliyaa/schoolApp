@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AttendanceScreen extends StatefulWidget {
+  const AttendanceScreen({super.key});
+
   @override
   _AttendanceScreenState createState() => _AttendanceScreenState();
 }
@@ -33,19 +35,19 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
         ),
         backgroundColor: Colors.deepPurple,
-        title: Text(
+        title: const Text(
           'Attendance',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -67,7 +69,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 value: year,
                 child: Text(
                   year,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               );
             }).toList(),
@@ -173,7 +175,7 @@ class MonthlyAttendanceScreen extends StatelessWidget {
   final int absent;
   final int leave;
 
-  MonthlyAttendanceScreen({
+  const MonthlyAttendanceScreen({super.key, 
     required this.month,
     required this.present,
     required this.absent,
@@ -186,7 +188,7 @@ class MonthlyAttendanceScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -195,13 +197,13 @@ class MonthlyAttendanceScreen extends StatelessWidget {
         centerTitle: true,
         title: Text(
           'Attendance - $month',
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),

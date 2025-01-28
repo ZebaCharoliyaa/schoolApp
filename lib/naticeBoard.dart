@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -63,11 +65,13 @@ class NoticeBoard extends StatelessWidget {
     },
   ];
 
+   NoticeBoard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
@@ -78,12 +82,12 @@ class NoticeBoard extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
         ),
-        title: Text(
+        title: const Text(
           'Notice Board',
           style: TextStyle(color: Colors.white),
         ),
@@ -116,7 +120,7 @@ class NoticeCard extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
 
-  NoticeCard({
+  const NoticeCard({super.key, 
     required this.title,
     required this.date,
     required this.imageUrl,
@@ -127,7 +131,7 @@ class NoticeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8.0),
@@ -144,7 +148,7 @@ class NoticeCard extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Text(
             title,
             style: TextStyle(
@@ -152,7 +156,7 @@ class NoticeCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4.0),
+          const SizedBox(height: 4.0),
           Text(
             date,
             style: TextStyle(
