@@ -269,6 +269,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:school/dashboard.dart';
+import 'package:school/fees.dart';
 
 void main() => runApp(RoleSelectionApp());
 
@@ -405,6 +406,21 @@ class _SignInScreenState extends State<SignInScreen>
     _controller.dispose();
     super.dispose();
   }
+  void navigateToRoleScreen() {
+    Widget nextScreen;
+    if (widget.role == 'Student') {
+      nextScreen = firstpage();
+    } else if (widget.role == 'Teacher') {
+      nextScreen = FeesDetailsScreen();
+    } else {
+      nextScreen = HomeScreen();
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextScreen),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -498,12 +514,9 @@ class _SignInScreenState extends State<SignInScreen>
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  createFadeScaleRoute(firstpage()),
-                                );
-                              },
+                              onPressed: navigateToRoleScreen,
+                                
+                              
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.deepPurple,
                                 shape: RoundedRectangleBorder(
