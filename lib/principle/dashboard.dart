@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school/teacher/addNotice.dart';
 
 void main() {
   runApp(TeacherDashboardApp());
@@ -25,7 +26,7 @@ class TeacherDashboard extends StatelessWidget {
     {
       'title': 'Notice Board',
       'icon': Icons.notifications,
-      'route': NoticeBoard()
+      'route': AdminNoticeBoard()
     },
     {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
   ];
@@ -78,16 +79,6 @@ class TeacherDashboard extends StatelessWidget {
     );
   }
 }
-
-// Dummy Screens
-// class AddTeacher extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(title: Text("Add Teacher")),
-//         body: Center(child: Text("Teacher Form Here")));
-//   }
-// }
 
 class TeacherFormScreen extends StatefulWidget {
   @override
@@ -173,15 +164,6 @@ class _TeacherFormScreenState extends State<TeacherFormScreen> {
         ),
       ),
     );
-  }
-}
-
-class NoticeBoard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("Notice Board")),
-        body: Center(child: Text("Notices Here")));
   }
 }
 

@@ -7,7 +7,6 @@ import 'package:school/naticeBoard.dart';
 import 'package:school/profile.dart';
 import 'package:school/report.dart';
 
-
 class firstpage extends StatelessWidget {
   const firstpage({super.key});
 
@@ -43,11 +42,13 @@ class firstpage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.deepPurple,
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+              child: Center(
+                child: Text(
+                  'Hello Student',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
                 ),
               ),
             ),
@@ -86,8 +87,6 @@ class firstpage extends StatelessWidget {
                 );
               },
             ),
-           
-            
             ListTile(
               leading: Icon(Icons.description),
               title: Text('Report Card'),
@@ -112,7 +111,6 @@ class firstpage extends StatelessWidget {
                 );
               },
             ),
-           
             ListTile(
               leading: Icon(Icons.person),
               title: Text('Profile'),
