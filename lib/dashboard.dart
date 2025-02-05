@@ -75,18 +75,18 @@ class firstpage extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.payment),
-              title: Text('Fees'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FeesDetailsScreen(),
-                  ),
-                );
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.payment),
+            //   title: Text('Fees'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => FeesDetailsScreen(),
+            //       ),
+            //     );
+            //   },
+            // ),
             ListTile(
               leading: Icon(Icons.description),
               title: Text('Report Card'),

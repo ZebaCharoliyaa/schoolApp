@@ -74,38 +74,38 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
           child: Column(
             children: [
               // Notice Board Section
-              Container(
-                // color: Colors.deepPurple,
-                padding: const EdgeInsets.all(16),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Notice Board",
-                            style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "Upcoming Test on Monday",
-                            style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   // color: Colors.deepPurple,
+              //   padding: const EdgeInsets.all(16),
+              //   child: const Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Expanded(
+              //         child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Text(
+              //               "Notice Board",
+              //               style: TextStyle(
+              //                 color: Colors.deepPurple,
+              //                 fontSize: 18,
+              //                 fontWeight: FontWeight.bold,
+              //               ),
+              //             ),
+              //             SizedBox(height: 4),
+              //             Text(
+              //               "Upcoming Test on Monday",
+              //               style: TextStyle(
+              //                 color: Colors.deepPurple,
+              //                 fontSize: 14,
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
               // Homework List Section
               Expanded(
@@ -143,7 +143,8 @@ class HomeworkCard extends StatelessWidget {
   final Color color;
   final VoidCallback onDelete;
 
-  const HomeworkCard({super.key, 
+  const HomeworkCard({
+    super.key,
     required this.subject,
     required this.task,
     required this.time,

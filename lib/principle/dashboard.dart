@@ -28,7 +28,7 @@ class TeacherDashboard extends StatelessWidget {
       'icon': Icons.notifications,
       'route': AdminNoticeBoard()
     },
-    {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
+    // {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
   ];
 
   @override
@@ -167,11 +167,11 @@ class _TeacherFormScreenState extends State<TeacherFormScreen> {
   }
 }
 
-class ShowReport extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("Show Report")),
-        body: Center(child: Text("Reports Here")));
-  }
-}
+// class ShowReport extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         appBar: AppBar(title: Text("Show Report")),
+//         body: Center(child: Text("Reports Here")));
+//   }
+// }
