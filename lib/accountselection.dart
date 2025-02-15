@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:school/dashboard.dart';
-import 'package:school/fees.dart';
+// import 'package:school/fees.dart';
 import 'package:school/principle/dashboard.dart';
-import 'package:school/teacher/addHomework.dart';
+// import 'package:school/teacher/addHomework.dart';
 import 'package:school/teacher/menu.dart';
 
 void main() => runApp(RoleSelectionApp());
