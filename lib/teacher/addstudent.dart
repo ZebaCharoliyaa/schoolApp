@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Required for formatting the date
+import 'package:intl/intl.dart';
+import 'package:school/services/api_services.dart'; // Required for formatting the date
 
 void main() {
   runApp(MaterialApp(
@@ -8,6 +9,7 @@ void main() {
 }
 
 class AddStudentForm extends StatefulWidget {
+  final FirestoreService firestoreService = FirestoreService();
   @override
   _AddStudentFormState createState() => _AddStudentFormState();
 }
@@ -87,9 +89,11 @@ class _AddStudentFormState extends State<AddStudentForm> {
             color: Colors.white,
           ),
         ),
-        title: Text('Add Student',style: TextStyle(color: Colors.white),),
+        title: Text(
+          'Add Student',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.deepPurple,
-
       ),
       body: AnimatedContainer(
         duration: Duration(milliseconds: 500),
