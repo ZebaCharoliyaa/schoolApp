@@ -50,7 +50,7 @@ class RoleSelectionScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final role = roles[index];
                 return GestureDetector(
-                   behavior: HitTestBehavior.opaque,
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.push(
                       context,
