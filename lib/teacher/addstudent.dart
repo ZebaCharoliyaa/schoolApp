@@ -1,15 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:school/services/api_services.dart'; // Required for formatting the date
 
-void main() {
-  runApp(MaterialApp(
-    home: AddStudentForm(),
-  ));
+// import 'package:school/services/api_services.dart'; // Required for formatting the date
+
+void addStudent(
+    String name, String age, String grade, String contact, String email) async {
+  await FirebaseFirestore.instance.collection('YioKFR9REiH95eYICcSZ').add({
+    'name': name,
+    'age': age,
+    'grade': grade,
+    'Contact': contact,
+    'Email': email,
+    'createdAt': FieldValue.serverTimestamp(),
+  });
 }
 
 class AddStudentForm extends StatefulWidget {
-  final FirestoreService firestoreService = FirestoreService();
+  // final FirestoreService firestoreService = FirestoreService();
   @override
   _AddStudentFormState createState() => _AddStudentFormState();
 }
@@ -55,6 +64,12 @@ class _AddStudentFormState extends State<AddStudentForm> {
       _parentContactController.clear();
       _emailController.clear();
     }
+  }
+
+  Stream<QuerySnapshot> fetchStudent() {
+    return FirebaseFirestore.instance
+        .collection('YioKFR9REiH95eYICcSZ')
+        .snapshots();
   }
 
   // Function to pick birthdate using DatePicker
