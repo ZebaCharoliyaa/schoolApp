@@ -118,21 +118,21 @@
 //   }
 // }
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirestoreService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+// class FirestoreService {
+//   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Add a student
-  Future<void> addStudent(
-      String name, String dob, String phone, String std) async {
-    await _db.collection('Addstudent').add({
-      'name': name,
-      'Date of Birth': dob,
-      'Phone No': phone,
-      'standard': std
-    });
-  }
+//   // Add a student
+//   Future<void> addStudent(
+//       String name, String dob, String phone, String std) async {
+//     await _db.collection('Addstudent').add({
+//       'name': name,
+//       'Date of Birth': dob,
+//       'Phone No': phone,
+//       'standard': std
+//     });
+//   }
 
   // Add attendance
   // Future<void> addAttendance(String studentId, String date, String status) async {
@@ -170,4 +170,4 @@ class FirestoreService {
   //     'date': DateTime.now().toString(),
   //   });
   // }
-}
+// }
