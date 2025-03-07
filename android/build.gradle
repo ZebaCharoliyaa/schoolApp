@@ -18,10 +18,15 @@
 // }
 
 buildscript {
+    repositories {  // ✅ Add this block
+        google()
+        mavenCentral()
+    }
     dependencies {
-        classpath 'com.google.gms:google-services:4.4.2' // Use the latest version
+        classpath 'com.google.gms:google-services:4.4.2' // ✅ This will now resolve correctly
     }
 }
+
 
 allprojects {
     repositories {
