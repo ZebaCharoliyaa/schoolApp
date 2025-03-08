@@ -1,6 +1,9 @@
-
 import 'package:flutter/material.dart';
-import 'package:school/signIn.dart';
+import 'package:school/dashboard.dart';
+// import 'package:school/fees.dart';
+import 'package:school/principle/dashboard.dart';
+// import 'package:school/teacher/addHomework.dart';
+import 'package:school/teacher/menu.dart';
 
 void main() => runApp(RoleSelectionApp());
 
@@ -8,11 +11,10 @@ class RoleSelectionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Animated Role Selection',
       debugShowCheckedModeBanner: false,
+      title: 'Role Selection with Animation',
       theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.deepPurple,
+        primarySwatch: Colors.deepPurple,
         fontFamily: 'Roboto',
       ),
       home: RoleSelectionScreen(),
@@ -30,10 +32,12 @@ class RoleSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Select Your Role',style: TextStyle(color: Colors.deepPurple,fontWeight: 
-        FontWeight.bold),),
+        title: Text(
+          'Select Your Role',
+          style:
+              TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         elevation: 0,
       ),
@@ -46,15 +50,53 @@ class RoleSelectionScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final role = roles[index];
                 return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => SignInApp(),
-                      ),
+                      createFadeScaleRoute(SignInScreen(role: role['role']!)),
                     );
                   },
-                  child: AnimatedRoleCard(role: role),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    elevation: 5,
+                    margin: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.deepPurple,
+                            Colors.deepPurple,
+                          ],
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.white,
+                            child: Text(
+                              role['icon']!,
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            role['role']!,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
@@ -65,58 +107,10 @@ class RoleSelectionScreen extends StatelessWidget {
   }
 }
 
-class AnimatedRoleCard extends StatelessWidget {
-  final Map<String, String> role;
-
-  AnimatedRoleCard({required this.role});
-
-  @override
-  Widget build(BuildContext context) {
-    return Hero(
-      tag: role['role']!,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 5,
-        margin: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: [Colors.deepPurple, Colors.deepPurple],
-            ),
-          ),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.white,
-                child: Text(
-                  role['icon']!,
-                  style: TextStyle(fontSize: 24),
-                ),
-              ),
-              SizedBox(width: 16),
-              Text(
-                role['role']!,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class SignInScreen extends StatefulWidget {
   final String role;
 
-  SignInScreen({required this.role});
+  const SignInScreen({required this.role});
 
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -124,6 +118,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen>
     with SingleTickerProviderStateMixin {
+  bool _rememberMe = false;
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
@@ -132,11 +127,11 @@ class _SignInScreenState extends State<SignInScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 1500),
     );
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: Curves.easeInOut,
     );
     _controller.forward();
   }
@@ -147,72 +142,192 @@ class _SignInScreenState extends State<SignInScreen>
     super.dispose();
   }
 
+  void navigateToRoleScreen() {
+    Widget nextScreen;
+    if (widget.role == 'Student') {
+      nextScreen = firstpage();
+    } else if (widget.role == 'Teacher') {
+      nextScreen = Menu();
+    } else {
+      nextScreen = TeacherDashboard();
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextScreen),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        // backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.deepPurple),
-      ),
+      backgroundColor: Colors.deepPurple,
       body: FadeTransition(
         opacity: _fadeAnimation,
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Hero(
-                tag: widget.role,
-                child: Text(
-                  '${widget.role} Sign In',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 160,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(150),
+                    bottomLeft: Radius.circular(150),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.3,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${widget.role} Sign In",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          TextField(
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.mail),
+                              labelText: '${widget.role} Id',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          TextField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.lock),
+                              labelText: 'Password',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          // Remember Me Checkbox
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value!;
+                                  });
+                                },
+                                activeColor: Colors.deepPurple,
+                              ),
+                              Text(
+                                "Remember Me",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: navigateToRoleScreen,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                              ),
+                              child: const Text(
+                                "Sign In",
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-              ),
-              SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  // Handle sign-in logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Signing in as ${widget.role}')),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Colors.deepPurple,
-                ),
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class ForgotPasswordScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text("Forgot Password Screen"),
+      ),
+    );
+  }
+}
+
+// class HomeScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Center(
+//         child: Text("Home Screen"),
+//       ),
+//     );
+//   }
+// }
+
+// Function to create a page route with fade and scale transitions
+Route createFadeScaleRoute(Widget page) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOut,
+        ),
+      );
+
+      final scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+        CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOut,
+        ),
+      );
+
+      return FadeTransition(
+        opacity: fadeAnimation,
+        child: ScaleTransition(
+          scale: scaleAnimation,
+          child: child,
+        ),
+      );
+    },
+  );
 }

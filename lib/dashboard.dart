@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:school/menu.dart';
+import 'package:school/accountselection.dart';
+import 'package:school/attendance.dart';
+import 'package:school/fees.dart';
+import 'package:school/homework.dart';
+import 'package:school/naticeBoard.dart';
+import 'package:school/profile.dart';
+import 'package:school/report.dart';
 
 class firstpage extends StatelessWidget {
   const firstpage({super.key});
@@ -8,30 +14,149 @@ class firstpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Dashboard',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        leading: IconButton(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: Colors.white),
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MenuScreen(),
-                  ));
+              Scaffold.of(context).openDrawer();
             },
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.white,
-            )),
-        shape: const RoundedRectangleBorder(
+          ),
+        ),
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
         ),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+              ),
+              child: Center(
+                child: Text(
+                  'Hello Student',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.menu_book_sharp),
+              title: Text('Home Work'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeworkScreen(),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person_pin),
+              title: Text('Attendance'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AttendanceScreen(),
+                  ),
+                );
+              },
+            ),
+            // ListTile(
+            //   leading: Icon(Icons.payment),
+            //   title: Text('Fees'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => FeesDetailsScreen(),
+            //       ),
+            //     );
+            //   },
+            // ),
+            ListTile(
+              leading: Icon(Icons.description),
+              title: Text('Report Card'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReportCardListScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.line_weight_outlined),
+              title: Text('Notice Board'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NoticeBoard(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Profile'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AnimatedStudentProfile(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person_add),
+              title: Text('Add Account'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RoleSelectionApp(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout_outlined),
+              title: Text('Log Out'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RoleSelectionApp(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.vertical(
+      //       bottom: Radius.circular(20),
+      //     ),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,15 +167,15 @@ class firstpage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Notice Board',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  SizedBox(
+                  SizedBox(height: 16),
+                  Container(
                     height: 150,
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -80,8 +205,8 @@ class firstpage extends StatelessWidget {
 
                         return Container(
                           width: 200, // Adjust width for horizontal scrolling
-                          margin: const EdgeInsets.only(right: 10),
-                          padding: const EdgeInsets.all(10),
+                          margin: EdgeInsets.only(right: 10),
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: colors[index % colors.length],
                             border: Border.all(color: Colors.grey),
@@ -100,11 +225,11 @@ class firstpage extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   notices[index]['text']!,
-                                  style: const TextStyle(fontSize: 16),
+                                  style: TextStyle(fontSize: 16),
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -125,17 +250,17 @@ class firstpage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Homework',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: 3, // Replace with actual homework data count
                     itemBuilder: (context, index) {
                       return Card(
@@ -145,12 +270,12 @@ class firstpage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ListTile(
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.book,
                             color: Colors.deepPurple,
                           ),
                           title: Text('Homework Title ${index + 1}'),
-                          subtitle: const Text('Subject details and deadlines'),
+                          subtitle: Text('Subject details and deadlines'),
                         ),
                       );
                     },

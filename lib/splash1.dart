@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school/splash2.dart';
+import 'package:school/accountselection.dart';
 // import 'package:school/exam.dart';
 
 void main() {
@@ -101,7 +101,7 @@ class _Splash1State extends State<Splash1> with SingleTickerProviderStateMixin {
   // Function to create a custom page route with animation
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const Splash2(),
+      pageBuilder: (context, animation, secondaryAnimation) => RoleSelectionApp(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0); // Slide in from the right
         const end = Offset.zero;

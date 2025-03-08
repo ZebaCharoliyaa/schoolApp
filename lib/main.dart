@@ -1,16 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:school/accountselection.dart';
-
-// import 'package:school/homework.dart';
-// import 'package:school/dashboard.dart';
-// import 'package:school/fees.dart';
-// import 'package:school/homework.dart';
-// import 'package:school/menu.dart';
-// import 'package:school/dashboard.dart';
+import 'package:school/homework.dart';
+import 'package:school/dashboard.dart';
+import 'package:school/fees.dart';
+import 'package:school/homework.dart';
+import 'package:school/teacher/menu.dart';
+import 'package:school/dashboard.dart';
 // import 'package:school/signIn.dart';
 import 'package:school/splash1.dart';
 
-void main() {
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
