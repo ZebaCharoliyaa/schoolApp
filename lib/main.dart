@@ -11,8 +11,9 @@ import 'package:school/dashboard.dart';
 import 'package:school/splash1.dart';
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  print("Firebase Initialized Successfully!");
   runApp(const MyApp());
 }
 
