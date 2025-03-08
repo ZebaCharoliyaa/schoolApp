@@ -1,8 +1,25 @@
 {
+  "name": "functions",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": "18"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "build": "tsc",
+    "start": "node index.js",
+    "deploy": "firebase deploy --only functions"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "firebase-admin": "^13.1.0",
     "firebase-functions": "^6.3.2"
-  }
+  },
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "typescript": "^5.3.3"
+  },
+  "private": true
 }
