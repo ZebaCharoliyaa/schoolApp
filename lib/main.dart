@@ -11,13 +11,13 @@ import 'package:school/dashboard.dart';
 import 'package:school/splash1.dart';
 
 void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 //   await Firebase.initializeApp();
 //   print("Firebase Initialized Successfully!");
 //   runApp(const MyApp());
 // }
 
-try {
+  try {
     await Firebase.initializeApp();
     if (Firebase.apps.isNotEmpty) {
       print("Firebase Initialized Successfully!");
@@ -28,6 +28,7 @@ try {
   } catch (e) {
     print("Error initializing Firebase: $e");
   }
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
