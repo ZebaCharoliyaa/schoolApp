@@ -2,24 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Admin Notice Board',
-//       theme: ThemeData(
-//         primarySwatch: Colors.deepPurple,
-//         visualDensity: VisualDensity.adaptivePlatformDensity,
-//       ),
-//       home: AdminNoticeBoard(),
-//     );
-//   }
-// }
-
 class AdminNoticeBoard extends StatefulWidget {
   @override
   _AdminNoticeBoardState createState() => _AdminNoticeBoardState();
