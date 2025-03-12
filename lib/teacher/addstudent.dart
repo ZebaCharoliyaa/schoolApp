@@ -535,302 +535,122 @@
 //   }
 // }
 
-
-//new code realtime dtabase ...
-
-// import 'package:firebase_database/firebase_database.dart';
 // import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
+// import 'package:school/services/api_services.dart';
+// // import 'package:your_project/api_service.dart'; // Ensure you import your ApiService file
 
-// // Function to add student to Realtime Database
-// Future<void> addStudent(String name, String age, String grade, String contact, String email) async {
-//   DatabaseReference ref = FirebaseDatabase.instance.ref("students").push();
-//   await ref.set({
-//     'name': name,
-//     'age': age,
-//     'grade': grade,
-//     'contact': contact,
-//     'email': email,
-//     'createdAt': DateTime.now().toIso8601String(),
-//   });
-// }
-
-// // Function to fetch students **once** (temporary fetch)
-// Future<DataSnapshot> fetchStudentsOnce() async {
-//   DatabaseReference ref = FirebaseDatabase.instance.ref("students");
-//   return await ref.get();
-// }
-
-// class AddStudentForm extends StatefulWidget {
+// class StudentScreen extends StatefulWidget {
 //   @override
-//   _AddStudentFormState createState() => _AddStudentFormState();
+//   _StudentScreenState createState() => _StudentScreenState();
 // }
 
-// class _AddStudentFormState extends State<AddStudentForm> {
-//   final _formKey = GlobalKey<FormState>();
+// class _StudentScreenState extends State<StudentScreen> {
+//   final ApiService apiService = ApiService();
+//   List<Map<String, dynamic>> students = [];
 
-//   // Controllers for form fields
-//   final TextEditingController _nameController = TextEditingController();
-//   final TextEditingController _ageController = TextEditingController();
-//   final TextEditingController _gradeController = TextEditingController();
-//   final TextEditingController _parentContactController = TextEditingController();
-//   final TextEditingController _emailController = TextEditingController();
+//   final TextEditingController nameController = TextEditingController();
+//   final TextEditingController dobController = TextEditingController();
+//   final TextEditingController phoneController = TextEditingController();
+//   final TextEditingController standardController = TextEditingController();
 
-//   bool _isSubmitted = false; // Button animation control
-//   DateTime? _selectedBirthDate; // Stores selected birthdate
-//   List<Map<String, dynamic>> _students = []; // Temporary student list
-
-//   // Function to handle form submission
-//   Future<void> _submitForm() async {
-//     if (_formKey.currentState!.validate()) {
+//   // Fetch students from Firebase
+//   Future<void> fetchStudents() async {
+//     try {
+//       final fetchedStudents = await apiService.getStudents();
 //       setState(() {
-//         _isSubmitted = true;
+//         students = fetchedStudents;
 //       });
-
-//       try {
-//         await addStudent(
-//           _nameController.text,
-//           _ageController.text,
-//           _gradeController.text,
-//           _parentContactController.text,
-//           _emailController.text,
-//         );
-
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text('Student Added Successfully!')),
-//         );
-
-//         // Fetch updated students list after submission (Temporary Fetch)
-//         _fetchStudentsTemporary();
-//       } catch (e) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text('Failed to add student: $e')),
-//         );
-//       }
-
-//       // Reset animation
-//       Future.delayed(Duration(seconds: 2), () {
-//         setState(() {
-//           _isSubmitted = false;
-//         });
-//       });
-
-//       // Clear form
-//       _nameController.clear();
-//       _ageController.clear();
-//       _gradeController.clear();
-//       _parentContactController.clear();
-//       _emailController.clear();
-//       setState(() {
-//         _selectedBirthDate = null;
-//       });
+//     } catch (e) {
+//       print('Error fetching students: $e');
 //     }
 //   }
 
-//   // Fetch students once and store locally
-//   Future<void> _fetchStudentsTemporary() async {
-//     DataSnapshot snapshot = await fetchStudentsOnce();
-//     if (snapshot.value != null) {
-//       Map<dynamic, dynamic> studentsMap = snapshot.value as Map<dynamic, dynamic>;
-//       List<Map<String, dynamic>> studentsList = studentsMap.entries.map((entry) {
-//         return {
-//           'key': entry.key,
-//           'name': entry.value['name'],
-//           'grade': entry.value['grade'],
-//         };
-//       }).toList();
-
-//       setState(() {
-//         _students = studentsList;
-//       });
-//     } else {
-//       setState(() {
-//         _students = [];
-//       });
+//   // Add a new student
+//   Future<void> addStudent() async {
+//     if (nameController.text.isEmpty ||
+//         dobController.text.isEmpty ||
+//         phoneController.text.isEmpty ||
+//         standardController.text.isEmpty) {
+//       return;
 //     }
-//   }
 
-//   // Function to pick birthdate using DatePicker
-//   Future<void> _pickBirthDate() async {
-//     DateTime? pickedDate = await showDatePicker(
-//       context: context,
-//       initialDate: DateTime.now(),
-//       firstDate: DateTime(1900),
-//       lastDate: DateTime.now(),
+//     bool success = await apiService.addStudent(
+//       nameController.text,
+//       dobController.text,
+//       phoneController.text,
+//       standardController.text,
 //     );
 
-//     if (pickedDate != null) {
-//       setState(() {
-//         _selectedBirthDate = pickedDate;
-//       });
-
-//       // Calculate age based on birthdate
-//       final age = DateTime.now().year - pickedDate.year;
-//       _ageController.text = age.toString();
+//     if (success) {
+//       fetchStudents(); // Refresh list after adding
+//       nameController.clear();
+//       dobController.clear();
+//       phoneController.clear();
+//       standardController.clear();
 //     }
 //   }
 
 //   @override
 //   void initState() {
 //     super.initState();
-//     _fetchStudentsTemporary(); // Fetch students when screen loads
+//     fetchStudents(); // Load students when screen opens
 //   }
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       appBar: AppBar(
-//         leading: IconButton(
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           icon: Icon(Icons.arrow_back, color: Colors.white),
-//         ),
-//         title: Text('Add Student', style: TextStyle(color: Colors.white)),
-//         backgroundColor: Colors.deepPurple,
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: Form(
-//                 key: _formKey,
-//                 child: SingleChildScrollView(
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.stretch,
-//                     children: [
-//                       Text('Add Student Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-//                       SizedBox(height: 16),
+//       appBar: AppBar(title: Text('Student Management')),
+//       body: Padding(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           children: [
+//             // Input Fields
+//             TextField(
+//                 controller: nameController,
+//                 decoration: InputDecoration(labelText: 'Name')),
+//             TextField(
+//                 controller: dobController,
+//                 decoration: InputDecoration(labelText: 'Date of Birth')),
+//             TextField(
+//                 controller: phoneController,
+//                 decoration: InputDecoration(labelText: 'Phone Number')),
+//             TextField(
+//                 controller: standardController,
+//                 decoration: InputDecoration(labelText: 'Standard')),
 
-//                       // Name field
-//                       TextFormField(
-//                         controller: _nameController,
-//                         decoration: InputDecoration(
-//                           labelText: 'Student Name',
-//                           border: OutlineInputBorder(),
-//                         ),
-//                         validator: (value) {
-//                           if (value == null || value.isEmpty) {
-//                             return 'Please enter the student\'s name';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       SizedBox(height: 16),
+//             SizedBox(height: 10),
 
-//                       // BirthDate field with Date Picker
-//                       GestureDetector(
-//                         onTap: _pickBirthDate,
-//                         child: AbsorbPointer(
-//                           child: TextFormField(
-//                             controller: TextEditingController(
-//                               text: _selectedBirthDate == null
-//                                   ? 'Select Birthdate'
-//                                   : DateFormat('dd-MM-yyyy').format(_selectedBirthDate!),
-//                             ),
-//                             decoration: InputDecoration(
-//                               labelText: 'BirthDate',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                             validator: (value) {
-//                               if (_selectedBirthDate == null) {
-//                                 return 'Please select a valid birthdate';
-//                               }
-//                               return null;
-//                             },
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(height: 16),
+//             // Add Student Button
+//             ElevatedButton(onPressed: addStudent, child: Text('Add Student')),
 
-//                       // Grade field
-//                       TextFormField(
-//                         controller: _gradeController,
-//                         decoration: InputDecoration(
-//                           labelText: 'Grade/Class',
-//                           border: OutlineInputBorder(),
-//                         ),
-//                         validator: (value) {
-//                           if (value == null || value.isEmpty) {
-//                             return 'Please enter the grade/class';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       SizedBox(height: 16),
+//             SizedBox(height: 20),
 
-//                       // Parent's contact field
-//                       TextFormField(
-//                         controller: _parentContactController,
-//                         decoration: InputDecoration(
-//                           labelText: 'Parent\'s Contact Number',
-//                           border: OutlineInputBorder(),
-//                         ),
-//                         keyboardType: TextInputType.phone,
-//                         validator: (value) {
-//                           if (value == null || value.isEmpty) {
-//                             return 'Please enter the parent\'s contact number';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       SizedBox(height: 16),
-
-//                       // Email field
-//                       TextFormField(
-//                         controller: _emailController,
-//                         decoration: InputDecoration(
-//                           labelText: 'Email',
-//                           border: OutlineInputBorder(),
-//                         ),
-//                         keyboardType: TextInputType.emailAddress,
-//                         validator: (value) {
-//                           if (value == null || value.isEmpty) {
-//                             return 'Please enter the email';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       SizedBox(height: 24),
-
-//                       // Submit button
-//                       ElevatedButton(
-//                         onPressed: _submitForm,
-//                         child: _isSubmitted ? CircularProgressIndicator() : Text('Add Student'),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
+//             // Student List
+//             Expanded(
+//               child: students.isEmpty
+//                   ? Center(child: Text('No students found.'))
+//                   : ListView.builder(
+//                       itemCount: students.length,
+//                       itemBuilder: (context, index) {
+//                         final student = students[index];
+//                         return ListTile(
+//                           title: Text(student['name']),
+//                           subtitle: Text(
+//                               'DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
+//                         );
+//                       },
+//                     ),
 //             ),
-//           ),
-
-//           // Display Fetched Student List (Temporary Fetch)
-//           Expanded(
-//             child: _students.isEmpty
-//                 ? Center(child: Text("No Students Found"))
-//                 : ListView.builder(
-//                     itemCount: _students.length,
-//                     itemBuilder: (context, index) {
-//                       return ListTile(
-//                         title: Text(_students[index]['name']),
-//                         subtitle: Text("Grade: ${_students[index]['grade']}"),
-//                       );
-//                     },
-//                   ),
-//           ),
-//         ],
+//           ],
+//         ),
 //       ),
 //     );
 //   }
 // }
 
-        
-
-        import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:school/services/api_services.dart';
-// import 'package:your_project/api_service.dart'; // Ensure you import your ApiService file
 
 class StudentScreen extends StatefulWidget {
   @override
@@ -842,12 +662,37 @@ class _StudentScreenState extends State<StudentScreen> {
   List<Map<String, dynamic>> students = [];
 
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController standardController = TextEditingController();
+  String? selectedStandard;
+  DateTime? selectedDate;
 
-  // Fetch students from Firebase
+  bool isLoading = false;
+
+  final List<String> standards = [
+    'Nursery',
+    'KG',
+    '1st',
+    '2nd',
+    '3rd',
+    '4th',
+    '5th',
+    '6th',
+    '7th',
+    '8th',
+    '9th',
+    '10th',
+    '11th',
+    '12th'
+  ]; // Dropdown options
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStudents();
+  }
+
   Future<void> fetchStudents() async {
+    setState(() => isLoading = true);
     try {
       final fetchedStudents = await apiService.getStudents();
       setState(() {
@@ -855,38 +700,59 @@ class _StudentScreenState extends State<StudentScreen> {
       });
     } catch (e) {
       print('Error fetching students: $e');
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
-  // Add a new student
+  Future<void> pickDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
   Future<void> addStudent() async {
     if (nameController.text.isEmpty ||
-        dobController.text.isEmpty ||
+        selectedDate == null ||
         phoneController.text.isEmpty ||
-        standardController.text.isEmpty) {
+        selectedStandard == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
       return;
     }
 
+    setState(() => isLoading = true);
     bool success = await apiService.addStudent(
       nameController.text,
-      dobController.text,
+      DateFormat('yyyy-MM-dd').format(selectedDate!),
       phoneController.text,
-      standardController.text,
+      selectedStandard!,
     );
 
     if (success) {
-      fetchStudents(); // Refresh list after adding
+      fetchStudents(); // Refresh list
       nameController.clear();
-      dobController.clear();
       phoneController.clear();
-      standardController.clear();
+      setState(() {
+        selectedDate = null;
+        selectedStandard = null;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add student')),
+      );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchStudents(); // Load students when screen opens
+    setState(() => isLoading = false);
   }
 
   @override
@@ -897,33 +763,76 @@ class _StudentScreenState extends State<StudentScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Input Fields
-            TextField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
-            TextField(controller: dobController, decoration: InputDecoration(labelText: 'Date of Birth')),
-            TextField(controller: phoneController, decoration: InputDecoration(labelText: 'Phone Number')),
-            TextField(controller: standardController, decoration: InputDecoration(labelText: 'Standard')),
-
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+            ),
             SizedBox(height: 10),
 
-            // Add Student Button
-            ElevatedButton(onPressed: addStudent, child: Text('Add Student')),
+            GestureDetector(
+              onTap: pickDate,
+              child: AbsorbPointer(
+                child: TextField(
+                  controller: TextEditingController(
+                    text: selectedDate == null
+                        ? 'Select Date of Birth'
+                        : DateFormat('dd-MM-yyyy').format(selectedDate!),
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Date of Birth',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+
+            TextField(
+              controller: phoneController,
+              decoration: InputDecoration(labelText: 'Phone Number'),
+              keyboardType: TextInputType.phone,
+            ),
+            SizedBox(height: 10),
+
+            DropdownButtonFormField<String>(
+              value: selectedStandard,
+              items: standards.map((std) {
+                return DropdownMenuItem(value: std, child: Text(std));
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedStandard = value;
+                });
+              },
+              decoration: InputDecoration(labelText: 'Select Standard'),
+            ),
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: isLoading ? null : addStudent,
+              child: isLoading
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Text('Add Student'),
+            ),
 
             SizedBox(height: 20),
 
-            // Student List
             Expanded(
-              child: students.isEmpty
-                  ? Center(child: Text('No students found.'))
-                  : ListView.builder(
-                      itemCount: students.length,
-                      itemBuilder: (context, index) {
-                        final student = students[index];
-                        return ListTile(
-                          title: Text(student['name']),
-                          subtitle: Text('DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
-                        );
-                      },
-                    ),
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : students.isEmpty
+                      ? Center(child: Text('No students found.'))
+                      : ListView.builder(
+                          itemCount: students.length,
+                          itemBuilder: (context, index) {
+                            final student = students[index];
+                            return ListTile(
+                              title: Text(student['name']),
+                              subtitle: Text(
+                                  'DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
+                            );
+                          },
+                        ),
             ),
           ],
         ),
