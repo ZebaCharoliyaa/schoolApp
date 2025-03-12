@@ -172,102 +172,62 @@
 // //   }
 // // }
 
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "https://school-c3c3a-default-rtdb.firebaseio.com"; // Use your Firebase database URL
+  final String baseUrl =
+      "https://school-c3c3a-default-rtdb.firebaseio.com"; // Use your Firebase database URL
 
-  // ✅ Add Student
-  // Future<bool> addStudent(String name, String dob, String phone, String standard) async {
-  //   final response = await http.post(
-  //     Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: jsonEncode({
-  //       'name': name,
-  //       'dob': dob,
-  //       'phone': phone,
-  //       'standard': standard,
-  //     }),
-  //   );
-
-  //   if (response.statusCode != 200 && response.statusCode != 201) {
-  //     throw Exception('Failed to add student');
-  //   }
-  // }
-
-  // // ✅ Get Students
-  // Future<List<Map<String, dynamic>>> getStudents() async {
-  //   final response = await http.get(Uri.parse('$baseUrl/students.json'));
-
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-  //     if (data == null) return []; // Return empty list if no students exist
-
-  //     List<Map<String, dynamic>> students = [];
-  //     data.forEach((key, value) {
-  //       students.add({
-  //         'id': key, // Firebase-generated unique ID
-  //         'name': value['name'],
-  //         'dob': value['dob'],
-  //         'phone': value['phone'],
-  //         'standard': value['standard'],
-  //       });
-  //     });
-
-  //     return students;
-  //   } else {
-  //     throw Exception('Failed to load students');
-  //   }
-  // }
   // ✅ Add Student with return value
-Future<bool> addStudent(String name, String dob, String phone, String standard) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'name': name,
-      'dob': dob,
-      'phone': phone,
-      'standard': standard,
-    }),
-  );
+  Future<bool> addStudent(
+      String name, String dob, String phone, String standard) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'dob': dob,
+        'phone': phone,
+        'standard': standard,
+      }),
+    );
 
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    return true; // Success ✅
-  } else {
-    return false; // Failure ❌
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true; // Success ✅
+    } else {
+      return false; // Failure ❌
+    }
   }
-}
 
 // ✅ Get Students
-Future<List<Map<String, dynamic>>> getStudents() async {
-  final response = await http.get(Uri.parse('$baseUrl/students.json'));
+  Future<List<Map<String, dynamic>>> getStudents() async {
+    final response = await http.get(Uri.parse('$baseUrl/students.json'));
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    if (data == null) return []; // Return empty list if no students exist
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data == null) return []; // Return empty list if no students exist
 
-    List<Map<String, dynamic>> students = [];
-    data.forEach((key, value) {
-      students.add({
-        'id': key, // Firebase-generated unique ID
-        'name': value['name'],
-        'dob': value['dob'],
-        'phone': value['phone'],
-        'standard': value['standard'],
+      List<Map<String, dynamic>> students = [];
+      data.forEach((key, value) {
+        students.add({
+          'id': key, // Firebase-generated unique ID
+          'name': value['name'],
+          'dob': value['dob'],
+          'phone': value['phone'],
+          'standard': value['standard'],
+        });
       });
-    });
 
-    return students;
-  } else {
-    throw Exception('Failed to load students');
+      return students;
+    } else {
+      throw Exception('Failed to load students');
+    }
   }
-}
 
   // ✅ Add Attendance
-  Future<void> addAttendance(String studentId, String date, String status) async {
+  Future<void> addAttendance(
+      String studentId, String date, String status) async {
     final response = await http.put(
       Uri.parse('$baseUrl/attendance/$studentId/$date.json'),
       headers: {'Content-Type': 'application/json'},
@@ -343,7 +303,8 @@ Future<List<Map<String, dynamic>>> getStudents() async {
   }
 
   // ✅ Add Homework
-  Future<void> addHomework(String studentId, String subject, String description, String dueDate) async {
+  Future<void> addHomework(String studentId, String subject, String description,
+      String dueDate) async {
     final response = await http.put(
       Uri.parse('$baseUrl/homework/$studentId/$subject.json'),
       headers: {'Content-Type': 'application/json'},
