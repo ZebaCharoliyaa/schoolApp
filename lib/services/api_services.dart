@@ -222,7 +222,7 @@ class ApiService {
   //   }
   // }
   // ✅ Add Student with return value
-Future<bool> addStudent(String name, String dob, String phone, String standard) async {
+Future<bool> addStudent(String name, String dob, String phone, String standard, {required String email}) async {
   final response = await http.post(
     Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
     headers: {'Content-Type': 'application/json'},
@@ -231,6 +231,7 @@ Future<bool> addStudent(String name, String dob, String phone, String standard) 
       'dob': dob,
       'phone': phone,
       'standard': standard,
+      'email': email,
     }),
   );
 
@@ -257,6 +258,7 @@ Future<List<Map<String, dynamic>>> getStudents() async {
         'dob': value['dob'],
         'phone': value['phone'],
         'standard': value['standard'],
+        'email':value['email'],
       });
     });
 
