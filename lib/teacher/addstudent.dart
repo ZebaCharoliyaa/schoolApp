@@ -535,157 +535,14 @@
 //   }
 // }
 
-// import 'package:flutter/material.dart';
-// import 'package:school/services/api_services.dart';
-// // import 'package:your_project/api_service.dart'; // Ensure you import your ApiService file
 
-// class StudentScreen extends StatefulWidget {
-//   @override
-//   _StudentScreenState createState() => _StudentScreenState();
-// }
+        
 
-// class _StudentScreenState extends State<StudentScreen> {
-//   final ApiService apiService = ApiService();
-//   List<Map<String, dynamic>> students = [];
-
-//   final TextEditingController nameController = TextEditingController();
-//   final TextEditingController dobController = TextEditingController();
-//   final TextEditingController phoneController = TextEditingController();
-//   final TextEditingController standardController = TextEditingController();
-
-//   // Fetch students from Firebase
-//   Future<void> fetchStudents() async {
-//     try {
-//       final fetchedStudents = await apiService.getStudents();
-//       setState(() {
-//         students = fetchedStudents;
-//       });
-//     } catch (e) {
-//       print('Error fetching students: $e');
-//     }
-//   }
-
-//   // Add a new student
-//   Future<void> addStudent() async {
-//     if (nameController.text.isEmpty ||
-//         dobController.text.isEmpty ||
-//         phoneController.text.isEmpty ||
-//         standardController.text.isEmpty) {
-//       return;
-//     }
-
-//     bool success = await apiService.addStudent(
-//       nameController.text,
-//       dobController.text,
-//       phoneController.text,
-//       standardController.text,
-//     );
-
-//     if (success) {
-//       fetchStudents(); // Refresh list after adding
-//       nameController.clear();
-//       dobController.clear();
-//       phoneController.clear();
-//       standardController.clear();
-//     }
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchStudents(); // Load students when screen opens
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Student Management')),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             // Input Fields
-//             TextField(
-//                 controller: nameController,
-//                 decoration: InputDecoration(labelText: 'Name')),
-//             TextField(
-//                 controller: dobController,
-//                 decoration: InputDecoration(labelText: 'Date of Birth')),
-//             TextField(
-//                 controller: phoneController,
-//                 decoration: InputDecoration(labelText: 'Phone Number')),
-//             TextField(
-//                 controller: standardController,
-//                 decoration: InputDecoration(labelText: 'Standard')),
-
-//             SizedBox(height: 10),
-
-//             // Add Student Button
-//             ElevatedButton(onPressed: addStudent, child: Text('Add Student')),
-
-//             SizedBox(height: 20),
-
-//             // Student List
-//             Expanded(
-//               child: students.isEmpty
-//                   ? Center(child: Text('No students found.'))
-//                   : ListView.builder(
-//                       itemCount: students.length,
-//                       itemBuilder: (context, index) {
-//                         final student = students[index];
-//                         return ListTile(
-//                           title: Text(student['name']),
-//                           subtitle: Text(
-//                               'DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
-//                         );
-//                       },
-//                     ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+        import 'package:flutter/material.dart';
 import 'package:school/services/api_services.dart';
+// import 'package:your_project/api_service.dart'; // Ensure you import your ApiService file
 
 class StudentScreen extends StatefulWidget {
-import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
-// // Function to add student to Firestore
-// Future<void> addStudent(
-//     String name, String age, String grade, String contact, String email) async {
-//   await FirebaseFirestore.instance.collection('students').add({
-//     'name': name,
-//     'age': age,
-//     'grade': grade,
-//     'contact': contact,
-//     'email': email,
-//     'createdAt': FieldValue.serverTimestamp(),
-//   });
-// }
-// Function to add student to Firestore
-Future<void> addStudent(String name, int age, String grade, String contact,
-    String email, DateTime birthDate) async {
-  await FirebaseFirestore.instance.collection('students').add({
-    'name': name,
-    'age': age,
-    'grade': grade,
-    'contact': contact,
-    'email': email,
-    'birthdate': DateFormat('yyyy-MM-dd')
-        .format(birthDate), // Store as a formatted string
-    'createdAt': FieldValue.serverTimestamp(),
-  });
-}
-
-class AddStudentForm extends StatefulWidget {
   @override
   _StudentScreenState createState() => _StudentScreenState();
 }
@@ -695,64 +552,17 @@ class _StudentScreenState extends State<StudentScreen> {
   List<Map<String, dynamic>> students = [];
 
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  String? selectedStandard;
-  DateTime? selectedDate;
+  final TextEditingController standardController = TextEditingController();
 
-  bool isLoading = false;
-
-  final List<String> standards = [
-    'Nursery',
-    'KG',
-    '1st',
-    '2nd',
-    '3rd',
-    '4th',
-    '5th',
-    '6th',
-    '7th',
-    '8th',
-    '9th',
-    '10th',
-    '11th',
-    '12th'
-  ]; // Dropdown options
-
-  @override
-  void initState() {
-    super.initState();
-    fetchStudents();
-  }
-
+  // Fetch students from Firebase
   Future<void> fetchStudents() async {
-    setState(() => isLoading = true);
     try {
       final fetchedStudents = await apiService.getStudents();
       setState(() {
-        _isSubmitted = true;
+        students = fetchedStudents;
       });
-
-      // // Save data to Firestore
-      // await addStudent(
-      //   _nameController.text,
-      //   _ageController.text,
-      //   _gradeController.text,
-      //   _parentContactController.text,
-      //   _emailController.text,
-      // );
-       try {
-      await addStudent(
-        _nameController.text,
-        _ageController.text,
-        _gradeController.text,
-        _parentContactController.text,
-        _emailController.text,
-      );
-      print("✅ Student added successfully!"); // Debugging
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Student Added Successfully!')),
-      );
     } catch (e) {
       print('Error fetching students: $e');
     }
