@@ -260,18 +260,33 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// // Function to add student to Firestore
+// Future<void> addStudent(
+//     String name, String age, String grade, String contact, String email) async {
+//   await FirebaseFirestore.instance.collection('students').add({
+//     'name': name,
+//     'age': age,
+//     'grade': grade,
+//     'contact': contact,
+//     'email': email,
+//     'createdAt': FieldValue.serverTimestamp(),
+//   });
+// }
 // Function to add student to Firestore
-Future<void> addStudent(String name, String age, String grade, String contact, String email) async {
+Future<void> addStudent(String name, int age, String grade, String contact,
+    String email, DateTime birthDate) async {
   await FirebaseFirestore.instance.collection('students').add({
     'name': name,
     'age': age,
     'grade': grade,
     'contact': contact,
     'email': email,
+    'birthdate': DateFormat('yyyy-MM-dd')
+        .format(birthDate), // Store as a formatted string
     'createdAt': FieldValue.serverTimestamp(),
   });
 }
@@ -288,7 +303,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _gradeController = TextEditingController();
-  final TextEditingController _parentContactController = TextEditingController();
+  final TextEditingController _parentContactController =
+      TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
   bool _isSubmitted = false; // Controls button animation
@@ -309,25 +325,34 @@ class _AddStudentFormState extends State<AddStudentForm> {
       //   _parentContactController.text,
       //   _emailController.text,
       // );
-       try {
-      await addStudent(
-        _nameController.text,
-        _ageController.text,
-        _gradeController.text,
-        _parentContactController.text,
-        _emailController.text,
-      );
-      print("✅ Student added successfully!"); // Debugging
+      // try {
+      //   await addStudent(
+      //     _nameController.text,
+      //     _ageController.text,
+      //     _gradeController.text,
+      //     _parentContactController.text,
+      //     _emailController.text,
+      //   );
+      try {
+        await addStudent(
+          _nameController.text,
+          int.parse(_ageController.text), // Convert age to int
+          _gradeController.text,
+          _parentContactController.text,
+          _emailController.text,
+          _selectedBirthDate!, // Ensure birthdate is passed
+        );
+        print("✅ Student added successfully!"); // Debugging
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Student Added Successfully!')),
-      );
-    } catch (e) {
-      print("❌ Error adding student: $e"); // Debugging
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add student: $e')),
-      );
-    }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Student Added Successfully!')),
+        );
+      } catch (e) {
+        print("❌ Error adding student: $e"); // Debugging
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add student: $e')),
+        );
+      }
 
       // Reset animation after submission
       Future.delayed(Duration(seconds: 2), () {
@@ -436,7 +461,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
                       controller: TextEditingController(
                         text: _selectedBirthDate == null
                             ? 'Select Birthdate'
-                            : DateFormat('dd-MM-yyyy').format(_selectedBirthDate!),
+                            : DateFormat('dd-MM-yyyy')
+                                .format(_selectedBirthDate!),
                       ),
                       decoration: InputDecoration(
                         labelText: 'BirthDate',
@@ -501,7 +527,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the email';
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(value)) {
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
+                        .hasMatch(value)) {
                       return 'Please enter a valid email address';
                     }
                     return null;
@@ -516,7 +543,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
                   child: ElevatedButton(
                     onPressed: _submitForm,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _isSubmitted ? Colors.green : Colors.deepPurple,
+                      backgroundColor:
+                          _isSubmitted ? Colors.green : Colors.deepPurple,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       textStyle: TextStyle(fontSize: 16),
                     ),
