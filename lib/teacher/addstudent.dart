@@ -653,6 +653,39 @@ import 'package:intl/intl.dart';
 import 'package:school/services/api_services.dart';
 
 class StudentScreen extends StatefulWidget {
+import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+// // Function to add student to Firestore
+// Future<void> addStudent(
+//     String name, String age, String grade, String contact, String email) async {
+//   await FirebaseFirestore.instance.collection('students').add({
+//     'name': name,
+//     'age': age,
+//     'grade': grade,
+//     'contact': contact,
+//     'email': email,
+//     'createdAt': FieldValue.serverTimestamp(),
+//   });
+// }
+// Function to add student to Firestore
+Future<void> addStudent(String name, int age, String grade, String contact,
+    String email, DateTime birthDate) async {
+  await FirebaseFirestore.instance.collection('students').add({
+    'name': name,
+    'age': age,
+    'grade': grade,
+    'contact': contact,
+    'email': email,
+    'birthdate': DateFormat('yyyy-MM-dd')
+        .format(birthDate), // Store as a formatted string
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+}
+
+class AddStudentForm extends StatefulWidget {
   @override
   _StudentScreenState createState() => _StudentScreenState();
 }
@@ -696,63 +729,64 @@ class _StudentScreenState extends State<StudentScreen> {
     try {
       final fetchedStudents = await apiService.getStudents();
       setState(() {
-        students = fetchedStudents;
+        _isSubmitted = true;
       });
+
+      // // Save data to Firestore
+      // await addStudent(
+      //   _nameController.text,
+      //   _ageController.text,
+      //   _gradeController.text,
+      //   _parentContactController.text,
+      //   _emailController.text,
+      // );
+       try {
+      await addStudent(
+        _nameController.text,
+        _ageController.text,
+        _gradeController.text,
+        _parentContactController.text,
+        _emailController.text,
+      );
+      print("✅ Student added successfully!"); // Debugging
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Student Added Successfully!')),
+      );
     } catch (e) {
       print('Error fetching students: $e');
-    } finally {
-      setState(() => isLoading = false);
     }
   }
 
-  Future<void> pickDate() async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
-
-    if (pickedDate != null) {
-      setState(() {
-        selectedDate = pickedDate;
-      });
-    }
-  }
-
+  // Add a new student
   Future<void> addStudent() async {
     if (nameController.text.isEmpty ||
-        selectedDate == null ||
+        dobController.text.isEmpty ||
         phoneController.text.isEmpty ||
-        selectedStandard == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields')),
-      );
+        standardController.text.isEmpty) {
       return;
     }
 
-    setState(() => isLoading = true);
     bool success = await apiService.addStudent(
       nameController.text,
-      DateFormat('yyyy-MM-dd').format(selectedDate!),
+      dobController.text,
       phoneController.text,
-      selectedStandard!,
+      standardController.text,
     );
 
     if (success) {
-      fetchStudents(); // Refresh list
+      fetchStudents(); // Refresh list after adding
       nameController.clear();
+      dobController.clear();
       phoneController.clear();
-      setState(() {
-        selectedDate = null;
-        selectedStandard = null;
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add student')),
-      );
+      standardController.clear();
     }
-    setState(() => isLoading = false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStudents(); // Load students when screen opens
   }
 
   @override
@@ -763,76 +797,33 @@ class _StudentScreenState extends State<StudentScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
+            // Input Fields
+            TextField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
+            TextField(controller: dobController, decoration: InputDecoration(labelText: 'Date of Birth')),
+            TextField(controller: phoneController, decoration: InputDecoration(labelText: 'Phone Number')),
+            TextField(controller: standardController, decoration: InputDecoration(labelText: 'Standard')),
+
             SizedBox(height: 10),
 
-            GestureDetector(
-              onTap: pickDate,
-              child: AbsorbPointer(
-                child: TextField(
-                  controller: TextEditingController(
-                    text: selectedDate == null
-                        ? 'Select Date of Birth'
-                        : DateFormat('dd-MM-yyyy').format(selectedDate!),
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Date of Birth',
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-
-            TextField(
-              controller: phoneController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 10),
-
-            DropdownButtonFormField<String>(
-              value: selectedStandard,
-              items: standards.map((std) {
-                return DropdownMenuItem(value: std, child: Text(std));
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedStandard = value;
-                });
-              },
-              decoration: InputDecoration(labelText: 'Select Standard'),
-            ),
-            SizedBox(height: 10),
-
-            ElevatedButton(
-              onPressed: isLoading ? null : addStudent,
-              child: isLoading
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Add Student'),
-            ),
+            // Add Student Button
+            ElevatedButton(onPressed: addStudent, child: Text('Add Student')),
 
             SizedBox(height: 20),
 
+            // Student List
             Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : students.isEmpty
-                      ? Center(child: Text('No students found.'))
-                      : ListView.builder(
-                          itemCount: students.length,
-                          itemBuilder: (context, index) {
-                            final student = students[index];
-                            return ListTile(
-                              title: Text(student['name']),
-                              subtitle: Text(
-                                  'DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
-                            );
-                          },
-                        ),
+              child: students.isEmpty
+                  ? Center(child: Text('No students found.'))
+                  : ListView.builder(
+                      itemCount: students.length,
+                      itemBuilder: (context, index) {
+                        final student = students[index];
+                        return ListTile(
+                          title: Text(student['name']),
+                          subtitle: Text('DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
