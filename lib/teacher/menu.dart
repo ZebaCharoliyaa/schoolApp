@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school/naticeBoard.dart';
 import 'package:school/teacher/addHomework.dart';
 import 'package:school/teacher/addNotice.dart';
 import 'package:school/teacher/addstudent.dart';
@@ -22,7 +23,7 @@ class Menu extends StatelessWidget {
     {
       'icon': Icons.line_weight_outlined,
       'label': 'Notice Board',
-      'page': AdminNoticeBoard()
+      'page': NoticeBoard()
     },
     {
       'icon': Icons.person_add,
