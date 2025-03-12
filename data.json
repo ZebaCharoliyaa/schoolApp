@@ -1,0 +1,95 @@
+{
+    "school": {
+      "name": "Green Valley High School",
+      "address": "123 Main Street, City, Country",
+      "contact": "+1234567890",
+      "email": "admin@greenvalleyschool.com"
+    },
+    "students": {
+      "student1": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "grade": "10",
+        "section": "A",
+        "parentContact": "+1987654321",
+        "dob": "2010-05-12",
+        "address": "456 Elm Street, City, Country"
+      },
+      "student2": {
+        "name": "Jane Doe",
+        "email": "jane@example.com",
+        "grade": "9",
+        "section": "B",
+        "parentContact": "+1987654322",
+        "dob": "2011-08-22",
+        "address": "789 Oak Street, City, Country"
+      }
+    },
+    "teachers": {
+      "teacher1": {
+        "name": "Mr. Smith",
+        "email": "smith@example.com",
+        "subject": "Mathematics",
+        "phone": "+1122334455",
+        "joiningDate": "2015-06-15"
+      },
+      "teacher2": {
+        "name": "Ms. Johnson",
+        "email": "johnson@example.com",
+        "subject": "Science",
+        "phone": "+1122334466",
+        "joiningDate": "2018-07-10"
+      }
+    },
+    "classes": {
+      "class1": {
+        "grade": "10",
+        "section": "A",
+        "classTeacher": "teacher1",
+        "students": ["student1"]
+      },
+      "class2": {
+        "grade": "9",
+        "section": "B",
+        "classTeacher": "teacher2",
+        "students": ["student2"]
+      }
+    },
+    "subjects": {
+      "math": {
+        "name": "Mathematics",
+        "teacher": "teacher1",
+        "classes": ["class1"]
+      },
+      "science": {
+        "name": "Science",
+        "teacher": "teacher2",
+        "classes": ["class2"]
+      }
+    },
+    "attendance": {
+      "2025-03-12": {
+        "class1": {
+          "student1": "present",
+          "student2": "absent"
+        }
+      }
+    },
+    "exams": {
+      "exam1": {
+        "name": "Midterm Exam",
+        "date": "2025-06-10",
+        "subjects": ["math", "science"]
+      }
+    },
+    "results": {
+      "student1": {
+        "exam1": {
+          "math": 85,
+          "science": 90
+        }
+      }
+    }
+}
+
+  

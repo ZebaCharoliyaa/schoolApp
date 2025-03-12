@@ -27,7 +27,7 @@ class Menu extends StatelessWidget {
     {
       'icon': Icons.person_add,
       'label': 'Add Student',
-      'page': AddStudentForm()
+      'page': StudentScreen()
     },
   ];
 
