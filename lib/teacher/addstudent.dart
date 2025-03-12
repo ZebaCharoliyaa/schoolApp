@@ -361,11 +361,6 @@ class _AddStudentFormState extends State<AddStudentForm> {
         });
       });
 
-      // Show success message
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Student Added Successfully!')),
-      // );
-
       // Clear the formq
       _nameController.clear();
       _ageController.clear();
