@@ -17,23 +17,22 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     fetchNotices();
   }
 
-  Future<void> fetchNotices() async {
-    // try {
-    final fetchedNotices = await apiService.getNotices();
-    print('Fetched Notices: $fetchedNotices'); // Debugging step
+ Future<void> fetchNotices() async {
+  final fetchedNotices = await apiService.getNotices();
+  print('Fetched Notices: $fetchedNotices'); // Debugging step
 
-    if (fetchedNotices.isEmpty) {
-      print('No notices found.');
-      return;
-    }
-
-    setState(() {
-      notices = List<Map<String, dynamic>>.from(fetchedNotices);
-    });
-    // } catch (e) {
-    //   print('Error fetching notices: $e');
-    // }
+  if (fetchedNotices.isEmpty) {
+    print('No notices found.');
+    return;
   }
+
+  setState(() {
+    notices = List<Map<String, dynamic>>.from(fetchedNotices);
+
+    // ✅ Sort notices by date (latest first)
+    notices.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
+  });
+}
 
   Future<void> addNotice() async {
     if (_noticeController.text.isEmpty) {
