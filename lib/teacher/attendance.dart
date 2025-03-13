@@ -98,6 +98,12 @@ class _AttendanceScreenState extends State<AttendanceScreen>
         title: Text('Attendance Management',
             style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.deepPurple,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white), // White back arrow
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,
