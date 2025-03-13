@@ -21,16 +21,32 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String selectedStandard = '10 Class-A';
+  String selectedStandard = '10-A';
   String selectedMonth = 'January';
 
   final List<String> standards = [
-    '10 Class-A',
-    '10 Class-B',
-    '11 Class-A',
-    '11 Class-B',
-    '12 Class-A',
-    '12 Class-B'
+    '1-A',
+    '1-B',
+    '2-A',
+    '2-B',
+    '3-A',
+    '3-B',
+    '4-A',
+    '4-B',
+    '5-A',
+    '5-B',
+    '6-A',
+    '6-B',
+    '7-A',
+    '7-B',
+    '8-A',
+    '8-B',
+    '9-A',
+    '9-B',
+    '10-A',
+    '10-B',
+    '11',
+    '12',
   ];
 
   final List<String> months = [
