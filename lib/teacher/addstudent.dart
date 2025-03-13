@@ -29,7 +29,7 @@ class _StudentScreenState extends State<StudentScreen> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 
@@ -92,8 +92,8 @@ class _StudentScreenState extends State<StudentScreen> {
         backgroundColor: Colors.deepPurple,
       ),
       body: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
-        color: _isSubmitted ? Colors.green.shade100 : Colors.white,
+        duration: Duration(milliseconds: 100),
+        // color: _isSubmitted ? Colors.green.shade100 : Colors.white,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
