@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school/naticeBoard.dart';
 import 'package:school/teacher/addNotice.dart';
 
 void main() {
@@ -26,7 +27,7 @@ class TeacherDashboard extends StatelessWidget {
     {
       'title': 'Notice Board',
       'icon': Icons.notifications,
-      'route': NoticeBoardScreen()
+      'route': NoticeBoard()
     },
     // {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
   ];
