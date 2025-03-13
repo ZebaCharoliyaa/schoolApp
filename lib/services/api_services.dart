@@ -275,30 +275,114 @@ class ApiService {
   }
 
   // ✅ Add Notice
-  Future<void> addNotice(String title, String content) async {
+  Future<bool> addNotice(String title, String content) async {
     final response = await http.post(
       Uri.parse('$baseUrl/notice_board.json'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'title': title,
-        'content': content,
+        // 'content': content,
         'date': DateTime.now().toIso8601String(),
       }),
     );
 
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception('Failed to add notice');
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true; // Notice successfully added
+    } else {
+      return false; // Failed to add notice
     }
   }
 
   // ✅ Get Notices
-  Future<Map<String, dynamic>?> getNotices() async {
+  // Future<List<Map<String, dynamic>>> getNotices() async {
+  //   final response = await http.get(Uri.parse('$baseUrl/notice_board.json'));
+
+  //   if (response.statusCode == 200) {
+  //     final Map<String, dynamic> data = jsonDecode(response.body);
+
+  //     // Convert API response to List<Map<String, dynamic>>
+  //     List<Map<String, dynamic>> noticesList = [];
+
+  //     data.forEach((key, value) {
+  //       noticesList.add({
+  //         'id': key,
+  //         'title': value['title'],
+  //         'content': value['content'],
+  //         'date': value['date'],
+  //       });
+  //     });
+
+  //     return noticesList;
+  //   } else {
+  //     throw Exception('Failed to load notices');
+  //   }
+  // }
+
+  Future<List<Map<String, dynamic>>> getNotices() async {
     final response = await http.get(Uri.parse('$baseUrl/notice_board.json'));
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      if (response.body == "null" || response.body.isEmpty) {
+        print("API Response is null or empty");
+        return [];
+      }
+
+      final Map<String, dynamic>? data = jsonDecode(response.body);
+
+      if (data == null || data.isEmpty) {
+        print("No notices found in the database");
+        return [];
+      }
+
+      List<Map<String, dynamic>> noticesList = [];
+
+      data.forEach((key, value) {
+        noticesList.add({
+          'id': key,
+          'title':
+              value['title'] ?? 'Untitled', // ✅ Default title (Avoids null)
+          'date':
+              value['date'] ?? 'Unknown date', // ✅ Default date (Avoids null)
+        });
+      });
+
+      return noticesList;
     } else {
-      throw Exception('Failed to load notices');
+      print(
+          'Error: Failed to load notices. Status Code: ${response.statusCode}');
+      return [];
+    }
+  }
+
+//update notice
+  Future<bool> updateNotice(String id, String newContent) async {
+    final response = await http.patch(
+      Uri.parse(
+          '$baseUrl/notice_board/$id.json'), // Ensure correct API endpoint
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'content': newContent}),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to update notice: ${response.body}');
+      return false;
+    }
+  }
+
+  // delete notice
+  Future<bool> deleteNotice(String id) async {
+    final response = await http.delete(
+      Uri.parse(
+          '$baseUrl/notice_board/$id.json'), // Ensure correct API endpoint
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to delete notice: ${response.body}');
+      return false;
     }
   }
 

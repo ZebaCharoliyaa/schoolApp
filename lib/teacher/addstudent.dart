@@ -535,10 +535,7 @@
 //   }
 // }
 
-
-        
-
-        import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:school/services/api_services.dart';
 // import 'package:your_project/api_service.dart'; // Ensure you import your ApiService file
 
@@ -608,10 +605,18 @@ class _StudentScreenState extends State<StudentScreen> {
         child: Column(
           children: [
             // Input Fields
-            TextField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
-            TextField(controller: dobController, decoration: InputDecoration(labelText: 'Date of Birth')),
-            TextField(controller: phoneController, decoration: InputDecoration(labelText: 'Phone Number')),
-            TextField(controller: standardController, decoration: InputDecoration(labelText: 'Standard')),
+            TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Name')),
+            TextField(
+                controller: dobController,
+                decoration: InputDecoration(labelText: 'Date of Birth')),
+            TextField(
+                controller: phoneController,
+                decoration: InputDecoration(labelText: 'Phone Number')),
+            TextField(
+                controller: standardController,
+                decoration: InputDecoration(labelText: 'Standard')),
 
             SizedBox(height: 10),
 
@@ -630,7 +635,8 @@ class _StudentScreenState extends State<StudentScreen> {
                         final student = students[index];
                         return ListTile(
                           title: Text(student['name']),
-                          subtitle: Text('DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
+                          subtitle: Text(
+                              'DOB: ${student['dob']}, Phone: ${student['phone']}, Std: ${student['standard']}'),
                         );
                       },
                     ),
