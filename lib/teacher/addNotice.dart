@@ -51,35 +51,6 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     }
   }
 
-  // void _editNotice(int index) {
-  //   TextEditingController editController =
-  //       TextEditingController(text: notices[index]['title']);
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: Text('Edit Notice'),
-  //       content: TextField(
-  //         controller: editController,
-  //         decoration: InputDecoration(hintText: 'Edit your notice'),
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () async {
-  //             bool success = await apiService.updateNotice(
-  //                 notices[index]['id'], editController.text);
-  //             if (success) {
-  //               fetchNotices(); // ✅ Refresh UI after updating
-  //             }
-  //             Navigator.pop(context);
-  //           },
-  //           child: Text('Update'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   void _editNotice(int index) {
     // Ensure the index is valid
     if (index < 0 || index >= notices.length) {
