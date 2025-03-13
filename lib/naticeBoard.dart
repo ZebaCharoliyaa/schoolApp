@@ -170,7 +170,7 @@
 //   }
 // }
 
-//new 
+//new
 
 // import 'package:flutter/material.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -319,7 +319,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -350,7 +349,8 @@ class NoticeBoard extends StatefulWidget {
 }
 
 class _NoticeBoardState extends State<NoticeBoard> {
-  final DatabaseReference _database = FirebaseDatabase.instance.ref().child('notice_board');
+  final DatabaseReference _database =
+      FirebaseDatabase.instance.ref().child('notice_board');
   List<Map<String, dynamic>> notices = [];
 
   @override
@@ -362,18 +362,15 @@ class _NoticeBoardState extends State<NoticeBoard> {
   // ✅ Correct Firebase Listener for Realtime Updates
   void _listenToNotices() {
     _database.onValue.listen((event) {
-      final dynamic data = event.snapshot.value;
+      final data = event.snapshot.value;
       if (data != null && data is Map) {
         List<Map<String, dynamic>> tempList = [];
-
         data.forEach((key, value) {
-          if (value is Map) {
-            tempList.add({
-              'id': key,
-              'title': value['title'] ?? 'No Title',
-              'date': value['date'] ?? 'No Date',
-            });
-          }
+          tempList.add({
+            'id': key,
+            'title': value['title'] ?? 'No Title',
+            'date': value['date'] ?? 'No Date',
+          });
         });
 
         setState(() {
@@ -384,8 +381,6 @@ class _NoticeBoardState extends State<NoticeBoard> {
           notices = [];
         });
       }
-    }, onError: (error) {
-      print("Error listening to notices: $error"); // Debugging step
     });
   }
 
@@ -398,7 +393,8 @@ class _NoticeBoardState extends State<NoticeBoard> {
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        title: const Text('Notice Board', style: TextStyle(color: Colors.white)),
+        title:
+            const Text('Notice Board', style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
