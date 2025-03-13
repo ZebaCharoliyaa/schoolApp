@@ -196,12 +196,12 @@ Future<bool> addStudent(String name, String dob, String phone, String standard, 
   }
 
 //update notice
-  Future<bool> updateNotice(String id, String newContent) async {
+  Future<bool> updateNotice(String id, String newTitle) async {
     final response = await http.patch(
       Uri.parse(
           '$baseUrl/notice_board/$id.json'), // Ensure correct API endpoint
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'content': newContent}),
+      body: jsonEncode({'title': newTitle}),
     );
 
     if (response.statusCode == 200) {
