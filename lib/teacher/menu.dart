@@ -14,7 +14,11 @@ class Menu extends StatelessWidget {
       'label': 'Home Work',
       'page': AddHomeworkScreen()
     },
-    {'icon': Icons.person_pin, 'label': 'Attendance', 'page': AttendanceScreen()},
+    {
+      'icon': Icons.person_pin,
+      'label': 'Attendance',
+      'page': AttendanceScreen()
+    },
     {
       'icon': Icons.description,
       'label': 'Report Card',
@@ -23,7 +27,7 @@ class Menu extends StatelessWidget {
     {
       'icon': Icons.line_weight_outlined,
       'label': 'Notice Board',
-      'page': NoticeBoard()
+      'page': AdminNoticeBoard()
     },
     {'icon': Icons.person_add, 'label': 'Add Student', 'page': StudentScreen()},
   ];
