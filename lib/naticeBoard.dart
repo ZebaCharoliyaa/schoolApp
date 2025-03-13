@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school/teacher/addNotice.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -7,7 +8,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NoticeBoard(),
+      home: NoticeBoardScreen(),
     );
   }
 }

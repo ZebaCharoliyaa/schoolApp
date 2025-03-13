@@ -1,4 +1,5 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:school/services/api_services.dart';
 
 // // void main() => runApp(AttendanceApp());
 
@@ -374,97 +375,36 @@
 //   }
 // }
 
-//new
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-class AttendanceHome extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-          ),
-          centerTitle: true,
-          title: Text('Attendance', style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.deepPurple,
-          bottom: TabBar(
-            indicatorWeight: 4.0,
-            tabs: [
-              Tab(text: 'Mark Attendance', icon: Icon(Icons.edit)),
-              Tab(text: 'View Attendance', icon: Icon(Icons.view_list)),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            AttendanceScreen(),
-            // ViewMonthlyAttendanceScreen(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class AttendanceScreen extends StatefulWidget {
   @override
   _AttendanceScreenState createState() => _AttendanceScreenState();
 }
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  String? selectedClass;
+  String selectedClass = '10-A';
   List<Map<String, dynamic>> students = [];
-
-  final List<String> standards = [
-    '1-A', '1-B', '2-A', '2-B', '3-A', '3-B', '4-A', '4-B',
-    '5-A', '5-B', '6-A', '6-B', '7-A', '7-B', '8-A', '8-B',
-    '9-A', '9-B', '10-A', '10-B', '11', '12'
-  ]; 
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    fetchStudents();
   }
 
   Future<void> fetchStudents() async {
-    if (selectedClass == null) return;
+    setState(() {
+      isLoading = true;
+    });
 
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('students')
-        .where('standard', isEqualTo: selectedClass)
-        .get();
+    try {
+      students = await ApiService().getStudents(selectedClass);
+    } catch (e) {
+      print("Error fetching students: $e");
+    }
 
     setState(() {
-      students = querySnapshot.docs
-          .map((doc) => {
-                'id': doc.id,
-                'name': doc['name'],
-                'present': false,
-                'absent': false,
-              })
-          .toList();
+      isLoading = false;
     });
-  }
-
-  void _showSuccessPopup() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Success'),
-        content: Text('Attendance submitted!'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -472,89 +412,139 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Select Class:', style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(width: 10),
               DropdownButton<String>(
                 value: selectedClass,
-                hint: Text('Choose Standard'),
                 onChanged: (String? newValue) {
                   setState(() {
-                    selectedClass = newValue;
+                    selectedClass = newValue!;
                   });
-                  fetchStudents();
+                  fetchStudents(); // Fetch new student list on class change
                 },
-                items: standards.map((std) {
-                  return DropdownMenuItem(value: std, child: Text(std));
+                items: [
+                  '1-A', '1-B', '2-A', '2-B', '3-A', '3-B',
+                  '4-A', '4-B', '5-A', '5-B', '6-A', '6-B',
+                  '7-A', '7-B', '8-A', '8-B', '9-A', '9-B',
+                  '10-A', '10-B', '11', '12',
+                ].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
                 }).toList(),
               ),
             ],
           ),
-          SizedBox(height: 10),
-          students.isEmpty
-              ? Center(child: Text('No students found for this class'))
-              : Expanded(
-                  child: ListView.builder(
-                    itemCount: students.length,
-                    itemBuilder: (context, index) {
-                      final student = students[index];
-                      return Card(
-                        margin: EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.deepPurple,
-                            child: Text(student['name'][0], style: TextStyle(color: Colors.white)),
-                          ),
-                          title: Text(student['name']),
-                          subtitle: Text(
-                            student['present']
-                                ? 'Status: Present'
-                                : student['absent']
-                                    ? 'Status: Absent'
-                                    : 'Status: Not Marked',
-                            style: TextStyle(
-                              color: student['present'] ? Colors.green : student['absent'] ? Colors.red : Colors.grey,
-                              fontWeight: FontWeight.bold,
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Student Name', style: TextStyle(fontWeight: FontWeight.bold)),
+              Row(
+                children: [
+                  Text('Present', style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(width: 30),
+                  Text('Absent', style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ],
+          ),
+          Divider(),
+          Expanded(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : students.isEmpty
+                    ? Center(child: Text("No students found"))
+                    : ListView.builder(
+                        itemCount: students.length,
+                        itemBuilder: (context, index) {
+                          final student = students[index];
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.deepPurple,
+                                child: Text(
+                                  student['name'][0],
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              title: Text(student['name']),
+                              subtitle: Text('Standard: ${student['standard']}'),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Checkbox(
+                                    value: student['present'] ?? false,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        student['present'] = value!;
+                                        if (value) student['absent'] = false;
+                                      });
+                                    },
+                                  ),
+                                  Checkbox(
+                                    value: student['absent'] ?? false,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        student['absent'] = value!;
+                                        if (value) student['present'] = false;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Checkbox(
-                                value: student['present'],
-                                onChanged: (value) {
-                                  setState(() {
-                                    student['present'] = value!;
-                                    if (value) student['absent'] = false;
-                                  });
-                                },
-                              ),
-                              Checkbox(
-                                value: student['absent'],
-                                onChanged: (value) {
-                                  setState(() {
-                                    student['absent'] = value!;
-                                    if (value) student['present'] = false;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total Students: ${students.length}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-          ElevatedButton(
-            onPressed: _showSuccessPopup,
-            child: Text('Submit', style: TextStyle(color: Colors.white)),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
+                ElevatedButton(
+                  onPressed: () {
+                    _showSuccessPopup(context);
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
+                  child: Text('Submit', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+
+  void _showSuccessPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('Attendance has been successfully submitted!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
- 

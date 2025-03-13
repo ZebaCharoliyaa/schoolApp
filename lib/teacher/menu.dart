@@ -14,7 +14,7 @@ class Menu extends StatelessWidget {
       'label': 'Home Work',
       'page': AddHomeworkScreen()
     },
-    {'icon': Icons.person_pin, 'label': 'Attendance', 'page': AttendanceHome()},
+    {'icon': Icons.person_pin, 'label': 'Attendance', 'page': AttendanceScreen()},
     {
       'icon': Icons.description,
       'label': 'Report Card',
