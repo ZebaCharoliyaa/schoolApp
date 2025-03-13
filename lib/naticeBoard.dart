@@ -170,6 +170,156 @@
 //   }
 // }
 
+//new 
+
+// import 'package:flutter/material.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_database/firebase_database.dart';
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(); // Initialize Firebase
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: NoticeBoard(),
+//     );
+//   }
+// }
+
+// class NoticeBoard extends StatefulWidget {
+//   const NoticeBoard({super.key});
+
+//   @override
+//   _NoticeBoardState createState() => _NoticeBoardState();
+// }
+
+// class _NoticeBoardState extends State<NoticeBoard> {
+//   final DatabaseReference _database =
+//       FirebaseDatabase.instance.ref().child('notices');
+
+//   List<Map<String, dynamic>> notices = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchNotices(); // Fetch notices from Firebase
+//   }
+
+//   void _fetchNotices() {
+//     _database.onValue.listen((event) {
+//       final data = event.snapshot.value;
+//       if (data != null && data is Map) {
+//         List<Map<String, dynamic>> tempList = [];
+//         data.forEach((key, value) {
+//           tempList.add({
+//             'id': key,
+//             'title': value['title'] ?? 'No Title',
+//             'date': value['date'] ?? 'No Date',
+//             // 'backgroundColor': Colors.green[100],
+//             // 'textColor': Colors.green[800],
+//           });
+//         });
+
+//         setState(() {
+//           notices = tempList.reversed.toList(); // Show latest notices first
+//         });
+//       }
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         shape: const RoundedRectangleBorder(
+//           borderRadius: BorderRadius.vertical(
+//             bottom: Radius.circular(20),
+//           ),
+//         ),
+//         centerTitle: true,
+//         backgroundColor: Colors.deepPurple,
+//         title:
+//             const Text('Notice Board', style: TextStyle(color: Colors.white)),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: notices.isEmpty
+//             ? const Center(child: Text("No notices available."))
+//             : GridView.count(
+//                 crossAxisCount: 2, // Two items per row
+//                 crossAxisSpacing: 8.0,
+//                 mainAxisSpacing: 8.0,
+//                 children: notices.map((notice) {
+//                   return NoticeCard(
+//                     title: notice['title'],
+//                     date: notice['date'],
+//                     // backgroundColor: notice['backgroundColor'],
+//                     // textColor: notice['textColor'],
+//                   );
+//                 }).toList(),
+//               ),
+//       ),
+//     );
+//   }
+// }
+
+// class NoticeCard extends StatelessWidget {
+//   final String title;
+//   final String date;
+//   // final Color? backgroundColor;
+//   // final Color? textColor;
+
+//   const NoticeCard({
+//     super.key,
+//     required this.title,
+//     required this.date,
+//     // required this.backgroundColor,
+//     // required this.textColor,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.all(8.0),
+//       decoration: BoxDecoration(
+//         // color: backgroundColor,
+//         borderRadius: BorderRadius.circular(8.0),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Text(
+//             title,
+//             style: TextStyle(
+//               // color: textColor,
+//               fontWeight: FontWeight.bold,
+//               fontSize: 16,
+//             ),
+//           ),
+//           const SizedBox(height: 8.0),
+//           Text(
+//             date,
+//             style: TextStyle(
+//               color: Colors.grey[600],
+//               fontSize: 12.0,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -200,18 +350,17 @@ class NoticeBoard extends StatefulWidget {
 }
 
 class _NoticeBoardState extends State<NoticeBoard> {
-  final DatabaseReference _database =
-      FirebaseDatabase.instance.ref().child('notices');
-
+  final DatabaseReference _database = FirebaseDatabase.instance.ref().child('notice_board');
   List<Map<String, dynamic>> notices = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchNotices(); // Fetch notices from Firebase
+    _listenToNotices(); // Start real-time listening
   }
 
-  void _fetchNotices() {
+  // Real-time listener for Firebase Realtime Database
+  void _listenToNotices() {
     _database.onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null && data is Map) {
@@ -221,13 +370,16 @@ class _NoticeBoardState extends State<NoticeBoard> {
             'id': key,
             'title': value['title'] ?? 'No Title',
             'date': value['date'] ?? 'No Date',
-            // 'backgroundColor': Colors.green[100],
-            // 'textColor': Colors.green[800],
           });
         });
 
+        // Update UI with latest notices
         setState(() {
           notices = tempList.reversed.toList(); // Show latest notices first
+        });
+      } else {
+        setState(() {
+          notices = [];
         });
       }
     });
@@ -238,14 +390,11 @@ class _NoticeBoardState extends State<NoticeBoard> {
     return Scaffold(
       appBar: AppBar(
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        title:
-            const Text('Notice Board', style: TextStyle(color: Colors.white)),
+        title: const Text('Notice Board', style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -259,8 +408,6 @@ class _NoticeBoardState extends State<NoticeBoard> {
                   return NoticeCard(
                     title: notice['title'],
                     date: notice['date'],
-                    // backgroundColor: notice['backgroundColor'],
-                    // textColor: notice['textColor'],
                   );
                 }).toList(),
               ),
@@ -272,15 +419,11 @@ class _NoticeBoardState extends State<NoticeBoard> {
 class NoticeCard extends StatelessWidget {
   final String title;
   final String date;
-  // final Color? backgroundColor;
-  // final Color? textColor;
 
   const NoticeCard({
     super.key,
     required this.title,
     required this.date,
-    // required this.backgroundColor,
-    // required this.textColor,
   });
 
   @override
@@ -288,7 +431,7 @@ class NoticeCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        // color: backgroundColor,
+        color: Colors.deepPurple[50],
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(
@@ -297,8 +440,7 @@ class NoticeCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              // color: textColor,
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
