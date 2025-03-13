@@ -356,24 +356,26 @@ class _NoticeBoardState extends State<NoticeBoard> {
   @override
   void initState() {
     super.initState();
-    _listenToNotices(); // Start real-time listening
+    _listenToNotices(); // ✅ Start real-time listening
   }
 
-  // Real-time listener for Firebase Realtime Database
+  // ✅ Correct Firebase Listener for Realtime Updates
   void _listenToNotices() {
     _database.onValue.listen((event) {
-      final data = event.snapshot.value;
+      final dynamic data = event.snapshot.value;
       if (data != null && data is Map) {
         List<Map<String, dynamic>> tempList = [];
+
         data.forEach((key, value) {
-          tempList.add({
-            'id': key,
-            'title': value['title'] ?? 'No Title',
-            'date': value['date'] ?? 'No Date',
-          });
+          if (value is Map) {
+            tempList.add({
+              'id': key,
+              'title': value['title'] ?? 'No Title',
+              'date': value['date'] ?? 'No Date',
+            });
+          }
         });
 
-        // Update UI with latest notices
         setState(() {
           notices = tempList.reversed.toList(); // Show latest notices first
         });
@@ -382,6 +384,8 @@ class _NoticeBoardState extends State<NoticeBoard> {
           notices = [];
         });
       }
+    }, onError: (error) {
+      print("Error listening to notices: $error"); // Debugging step
     });
   }
 
