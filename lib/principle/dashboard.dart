@@ -26,7 +26,7 @@ class TeacherDashboard extends StatelessWidget {
     {
       'title': 'Notice Board',
       'icon': Icons.notifications,
-      'route': AdminNoticeBoard()
+      'route': NoticeBoardScreen()
     },
     // {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
   ];
