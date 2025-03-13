@@ -42,7 +42,8 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
 
     bool success = await apiService.addNotice(
       _noticeController.text,
-      DateTime.now().toString().split(' ')[0],
+      // DateTime.now().toString().split(' ')[0],
+      DateTime.now().toIso8601String(),
     );
 
     if (success) {
