@@ -54,6 +54,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   // void _editNotice(int index) {
   //   TextEditingController editController =
   //       TextEditingController(text: notices[index]['title']);
+
   //   showDialog(
   //     context: context,
   //     builder: (context) => AlertDialog(
@@ -68,7 +69,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   //             bool success = await apiService.updateNotice(
   //                 notices[index]['id'], editController.text);
   //             if (success) {
-  //               fetchNotices();
+  //               fetchNotices(); // ✅ Refresh UI after updating
   //             }
   //             Navigator.pop(context);
   //           },
@@ -78,7 +79,15 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   //     ),
   //   );
   // }
+
   void _editNotice(int index) {
+    // Ensure the index is valid
+    if (index < 0 || index >= notices.length) {
+      print('Invalid index');
+      return;
+    }
+
+    // Create a TextEditingController with the current notice title
     TextEditingController editController =
         TextEditingController(text: notices[index]['title']);
 
@@ -93,14 +102,35 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
         actions: [
           TextButton(
             onPressed: () async {
+              // Validate the input
+              if (editController.text.isEmpty) {
+                // Show an error message if the input is empty
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Notice cannot be empty')),
+                );
+                return;
+              }
+
+              // Call the API to update the notice
               bool success = await apiService.updateNotice(
                   notices[index]['id'], editController.text);
               if (success) {
-                fetchNotices(); // ✅ Refresh UI after updating
+                fetchNotices(); // Refresh UI after updating
+              } else {
+                // Handle the case where the update fails
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to update notice')),
+                );
               }
               Navigator.pop(context);
             },
             child: Text('Update'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog without updating
+            },
+            child: Text('Cancel'),
           ),
         ],
       ),

@@ -6,18 +6,20 @@ class ApiService {
       "https://school-c3c3a-default-rtdb.firebaseio.com"; // Use your Firebase database URL
 
   // ✅ Add Student with return value
-Future<bool> addStudent(String name, String dob, String phone, String standard, {required String email}) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'name': name,
-      'dob': dob,
-      'phone': phone,
-      'standard': standard,
-      'email': email
-    }),
-  );
+  Future<bool> addStudent(
+      String name, String dob, String phone, String standard,
+      {required String email}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'dob': dob,
+        'phone': phone,
+        'standard': standard,
+        'email': email
+      }),
+    );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true; // Success ✅
@@ -34,31 +36,32 @@ Future<bool> addStudent(String name, String dob, String phone, String standard, 
       final data = jsonDecode(response.body);
       if (data == null) return []; // Return empty list if no students exist
 
-    // List<Map<String, dynamic>> students = [];
-    // data.forEach((key, value) {
-    //   students.add({
-    //     'id': key, // Firebase-generated unique ID
-    //     'name': value['name'],
-    //     'dob': value['dob'],
-    //     'phone': value['phone'],
-    //     'standard': value['standard'],
-    //     'email': value['email'],
-    //   });
-    // });
+      // List<Map<String, dynamic>> students = [];
+      // data.forEach((key, value) {
+      //   students.add({
+      //     'id': key, // Firebase-generated unique ID
+      //     'name': value['name'],
+      //     'dob': value['dob'],
+      //     'phone': value['phone'],
+      //     'standard': value['standard'],
+      //     'email': value['email'],
+      //   });
+      // });
 
-     List<Map<String, dynamic>> students = [];
-    data.forEach((key, value) {
-      if (value['standard'] == standard) { // Filter by standard
-        students.add({
-          'id': key,
-          'name': value['name'],
-          'dob': value['dob'],
-          'phone': value['phone'],
-          'standard': value['standard'],
-          'email': value['email'],
-        });
-      }
-    });
+      List<Map<String, dynamic>> students = [];
+      data.forEach((key, value) {
+        if (value['standard'] == standard) {
+          // Filter by standard
+          students.add({
+            'id': key,
+            'name': value['name'],
+            'dob': value['dob'],
+            'phone': value['phone'],
+            'standard': value['standard'],
+            'email': value['email'],
+          });
+        }
+      });
 
       return students;
     } else {
@@ -196,12 +199,12 @@ Future<bool> addStudent(String name, String dob, String phone, String standard, 
   }
 
 //update notice
-  Future<bool> updateNotice(String id, String newContent) async {
+  Future<bool> updateNotice(String id, String newTitle) async {
     final response = await http.patch(
       Uri.parse(
           '$baseUrl/notice_board/$id.json'), // Ensure correct API endpoint
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'content': newContent}),
+      body: jsonEncode({'title': newTitle}),
     );
 
     if (response.statusCode == 200) {
