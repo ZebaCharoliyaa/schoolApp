@@ -29,6 +29,8 @@ class ApiService {
 
     return response.statusCode == 200 || response.statusCode == 201;
   }
+  
+  
   // ✅ Add Student with return value
   Future<bool> addStudent(
       String name, String dob, String phone, String standard,
@@ -255,14 +257,41 @@ Future<Map<String, String>> getStudentMonthlyAttendance(String standard, String 
   return response.statusCode == 200 || response.statusCode == 201;
 }
 
-  // ✅ Get Homework
-  Future<Map<String, dynamic>?> getHomework() async {
-    final response = await http.get(Uri.parse('$baseUrl/homework.json'));
+  // // ✅ Get Homework
+  // Future<Map<String, dynamic>?> getHomework(String s) async {
+  //   final response = await http.get(Uri.parse('$baseUrl/homework.json'));
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load homework');
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body);
+  //   } else {
+  //     throw Exception('Failed to load homework');
+  //   }
+  // }
+
+  // ✅ Fetch Homework Function
+  Future<List<Map<String, dynamic>>> fetchHomework(String standardId) async {
+    try {
+      final response =
+          await http.get(Uri.parse('$baseUrl/homework/$standardId.json'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic>? data = jsonDecode(response.body);
+        if (data == null) return [];
+
+        return data.entries.map((entry) {
+          return {
+            'subject': entry.key,
+            'description': entry.value['description'],
+            'dueDate': entry.value['dueDate'],
+          };
+        }).toList();
+      } else {
+        print("❌ Failed to fetch homework: ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      print("❌ Error: $e");
+      return [];
     }
   }
 
