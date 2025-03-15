@@ -145,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen>
   void navigateToRoleScreen() {
     Widget nextScreen;
     if (widget.role == 'Student') {
-      nextScreen = firstpage();
+      nextScreen = FirstPage();
     } else if (widget.role == 'Teacher') {
       nextScreen = Menu();
     } else {
