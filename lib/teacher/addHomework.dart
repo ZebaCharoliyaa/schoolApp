@@ -43,20 +43,29 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
   ];
 
   final Map<String, List<String>> _subjectsByStandard = {
-    'Class 1': ['Mathematics', 'English'],
-    'Class 2': ['Mathematics', 'Science'],
-    'Class 3': ['Mathematics', 'English', 'Science'],
-    'Class 4': ['Mathematics', 'Science', 'History'],
-    'Class 5': ['Mathematics', 'Science', 'English', 'History'],
-    'Class 6': ['Mathematics', 'Science', 'Geography'],
-    'Class 7': ['Mathematics', 'Science', 'English', 'Geography'],
-    'Class 8': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-    'Class 9': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-    'Class 10': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-    'Class 11': ['Account', 'State', 'OCM', 'Eco', 'English'],
-    'Class 12': ['Account', 'State', 'OCM', 'Eco', 'English'],
-  };
-
+  '1-A': ['Mathematics', 'English'],
+  '1-B': ['Mathematics', 'English'],
+  '2-A': ['Mathematics', 'Science'],
+  '2-B': ['Mathematics', 'Science'],
+  '3-A': ['Mathematics', 'English', 'Science'],
+  '3-B': ['Mathematics', 'English', 'Science'],
+  '4-A': ['Mathematics', 'Science', 'History'],
+  '4-B': ['Mathematics', 'Science', 'History'],
+  '5-A': ['Mathematics', 'Science', 'English', 'History'],
+  '5-B': ['Mathematics', 'Science', 'English', 'History'],
+  '6-A': ['Mathematics', 'Science', 'Geography'],
+  '6-B': ['Mathematics', 'Science', 'Geography'],
+  '7-A': ['Mathematics', 'Science', 'English', 'Geography'],
+  '7-B': ['Mathematics', 'Science', 'English', 'Geography'],
+  '8-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+  '8-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+  '9-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+  '9-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+  '10-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+  '10-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+  '11': ['Account', 'State', 'OCM', 'Eco', 'English'],
+  '12': ['Account', 'State', 'OCM', 'Eco', 'English'],
+};
   @override
   void dispose() {
     _titleController.dispose();
