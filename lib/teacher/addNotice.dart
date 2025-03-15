@@ -17,22 +17,23 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     fetchNotices();
   }
 
- Future<void> fetchNotices() async {
-  final fetchedNotices = await apiService.getNotices();
-  print('Fetched Notices: $fetchedNotices'); // Debugging step
+  Future<void> fetchNotices() async {
+    final fetchedNotices = await apiService.getNotices();
+    print('Fetched Notices: $fetchedNotices'); // Debugging step
 
-  if (fetchedNotices.isEmpty) {
-    print('No notices found.');
-    return;
+    if (fetchedNotices.isEmpty) {
+      print('No notices found.');
+      return;
+    }
+
+    setState(() {
+      notices = List<Map<String, dynamic>>.from(fetchedNotices);
+
+      // ✅ Sort notices by date (latest first)
+      notices.sort((a, b) =>
+          DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
+    });
   }
-
-  setState(() {
-    notices = List<Map<String, dynamic>>.from(fetchedNotices);
-
-    // ✅ Sort notices by date (latest first)
-    notices.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
-  });
-}
 
   Future<void> addNotice() async {
     if (_noticeController.text.isEmpty) {
@@ -116,14 +117,41 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
 
     String noticeId = notices[index]['id'] as String; // Ensure it's a string
 
+    // Show confirmation dialog before deleting
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Delete'),
+        content: Text('Are you sure you want to delete this notice?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // Cancel delete
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true), // Confirm delete
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    // If user cancels, stop function execution
+    if (!confirmDelete) return;
+
     bool success = await apiService.deleteNotice(noticeId);
 
     if (success) {
       setState(() {
-        notices.removeAt(index); // Update UI
+        notices.removeAt(index); // ✅ Update UI after deleting
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Notice deleted successfully')),
+      );
     } else {
-      print('Failed to delete notice');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete notice')),
+      );
     }
   }
 
