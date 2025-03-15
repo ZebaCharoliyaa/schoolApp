@@ -29,6 +29,11 @@ class _FirstPageState extends State<FirstPage> {
   Future<void> fetchNotices() async {
     try {
       List<Map<String, dynamic>> latestNotices = await apiService.getNotices();
+      latestNotices.sort((a, b) {
+        DateTime dateA = DateTime.parse(a['date']);
+        DateTime dateB = DateTime.parse(b['date']);
+        return dateB.compareTo(dateA); // Descending order
+      });
       if (mounted) {
         setState(() {
           notices = latestNotices.take(3).toList(); // ✅ Show only latest 3 notices
