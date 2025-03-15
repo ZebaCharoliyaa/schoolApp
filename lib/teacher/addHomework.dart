@@ -18,18 +18,28 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
       ApiService(); // Ensure apiService is initialized
 
   final List<String> _standards = [
-    'Class 1',
-    'Class 2',
-    'Class 3',
-    'Class 4',
-    'Class 5',
-    'Class 6',
-    'Class 7',
-    'Class 8',
-    'Class 9',
-    'Class 10',
-    'Class 11',
-    'Class 12',
+     '1-A',
+    '1-B',
+    '2-A',
+    '2-B',
+    '3-A',
+    '3-B',
+    '4-A',
+    '4-B',
+    '5-A',
+    '5-B',
+    '6-A',
+    '6-B',
+    '7-A',
+    '7-B',
+    '8-A',
+    '8-B',
+    '9-A',
+    '9-B',
+    '10-A',
+    '10-B',
+    '11',
+    '12'
   ];
 
   final Map<String, List<String>> _subjectsByStandard = {
