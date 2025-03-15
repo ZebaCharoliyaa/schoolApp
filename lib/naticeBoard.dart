@@ -319,27 +319,152 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_database/firebase_database.dart';
+// import 'package:school/services/api_services.dart';
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(); // Initialize Firebase
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: NoticeBoard(),
+//     );
+//   }
+// }
+
+// class NoticeBoard extends StatefulWidget {
+//   const NoticeBoard({super.key});
+
+//   @override
+//   _NoticeBoardState createState() => _NoticeBoardState();
+// }
+
+// class _NoticeBoardState extends State<NoticeBoard> {
+//   final DatabaseReference _database =
+//       FirebaseDatabase.instance.ref().child('notice_board');
+//   List<Map<String, dynamic>> notices = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _listenToNotices(); // ✅ Start real-time listening
+//   }
+
+//   // ✅ Correct Firebase Listener for Realtime Updates
+//   void _listenToNotices() {
+//     _database.onValue.listen((event) {
+//       final data = event.snapshot.value;
+//       if (data != null && data is Map) {
+//         List<Map<String, dynamic>> tempList = [];
+//         data.forEach((key, value) {
+//           tempList.add({
+//             'id': key,
+//             'title': value['title'] ?? 'No Title',
+//             'date': value['date'] ?? 'No Date',
+//           });
+//         });
+
+//         setState(() {
+//           notices = tempList.reversed.toList(); // Show latest notices first
+//         });
+//       } else {
+//         setState(() {
+//           notices = [];
+//         });
+//       }
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         shape: const RoundedRectangleBorder(
+//           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+//         ),
+//         centerTitle: true,
+//         backgroundColor: Colors.deepPurple,
+//         title:
+//             const Text('Notice Board', style: TextStyle(color: Colors.white)),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: notices.isEmpty
+//             ? const Center(child: Text("No notices available."))
+//             : GridView.count(
+//                 crossAxisCount: 2, // Two items per row
+//                 crossAxisSpacing: 8.0,
+//                 mainAxisSpacing: 8.0,
+//                 children: notices.map((notice) {
+//                   return NoticeCard(
+//                     title: notice['title'],
+//                     date: notice['date'],
+//                   );
+//                 }).toList(),
+//               ),
+//       ),
+//     );
+//   }
+// }
+
+// class NoticeCard extends StatelessWidget {
+//   final String title;
+//   final String date;
+
+//   const NoticeCard({
+//     super.key,
+//     required this.title,
+//     required this.date,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.all(8.0),
+//       decoration: BoxDecoration(
+//         color: Colors.deepPurple[50],
+//         borderRadius: BorderRadius.circular(8.0),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Text(
+//             title,
+//             style: const TextStyle(
+//               fontWeight: FontWeight.bold,
+//               fontSize: 16,
+//             ),
+//           ),
+//           const SizedBox(height: 8.0),
+//           Text(
+//             date,
+//             style: TextStyle(
+//               color: Colors.grey[600],
+//               fontSize: 12.0,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Initialize Firebase
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: NoticeBoard(),
-    );
-  }
-}
+import 'package:school/services/api_services.dart';
 
 class NoticeBoard extends StatefulWidget {
   const NoticeBoard({super.key});
@@ -349,39 +474,47 @@ class NoticeBoard extends StatefulWidget {
 }
 
 class _NoticeBoardState extends State<NoticeBoard> {
-  final DatabaseReference _database =
-      FirebaseDatabase.instance.ref().child('notice_board');
+  final ApiService apiService = ApiService();
   List<Map<String, dynamic>> notices = [];
+  bool isLoading = true;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _listenToNotices(); // ✅ Start real-time listening
+    fetchNotices(); // ✅ Fetch notices when screen loads
+    _startAutoRefresh(); // ✅ Automatically fetch notices
   }
 
-  // ✅ Correct Firebase Listener for Realtime Updates
-  void _listenToNotices() {
-    _database.onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null && data is Map) {
-        List<Map<String, dynamic>> tempList = [];
-        data.forEach((key, value) {
-          tempList.add({
-            'id': key,
-            'title': value['title'] ?? 'No Title',
-            'date': value['date'] ?? 'No Date',
-          });
-        });
-
+  // ✅ Fetch Notices from API
+  Future<void> fetchNotices() async {
+    try {
+      List<Map<String, dynamic>> newNotices = await apiService.getNotices();
+      if (mounted) {
         setState(() {
-          notices = tempList.reversed.toList(); // Show latest notices first
-        });
-      } else {
-        setState(() {
-          notices = [];
+          notices = newNotices;
+          isLoading = false;
         });
       }
+    } catch (e) {
+      print("Error fetching notices: $e");
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
+  // ✅ Automatically Refresh Notices Every 30 Seconds
+  void _startAutoRefresh() {
+    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      fetchNotices();
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // ✅ Stop auto-refresh when the screen is closed
+    super.dispose();
   }
 
   @override
@@ -393,24 +526,25 @@ class _NoticeBoardState extends State<NoticeBoard> {
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        title:
-            const Text('Notice Board', style: TextStyle(color: Colors.white)),
+        title: const Text('Notice Board', style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: notices.isEmpty
-            ? const Center(child: Text("No notices available."))
-            : GridView.count(
-                crossAxisCount: 2, // Two items per row
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                children: notices.map((notice) {
-                  return NoticeCard(
-                    title: notice['title'],
-                    date: notice['date'],
-                  );
-                }).toList(),
-              ),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator()) // ✅ Show loading indicator
+            : notices.isEmpty
+                ? const Center(child: Text("No notices available."))
+                : GridView.count(
+                    crossAxisCount: 2, // Two items per row
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    children: notices.map((notice) {
+                      return NoticeCard(
+                        title: notice['title'],
+                        date: notice['date'],
+                      );
+                    }).toList(),
+                  ),
       ),
     );
   }

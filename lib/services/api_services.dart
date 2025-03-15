@@ -36,18 +36,7 @@ class ApiService {
       final data = jsonDecode(response.body);
       if (data == null) return []; // Return empty list if no students exist
 
-      // List<Map<String, dynamic>> students = [];
-      // data.forEach((key, value) {
-      //   students.add({
-      //     'id': key, // Firebase-generated unique ID
-      //     'name': value['name'],
-      //     'dob': value['dob'],
-      //     'phone': value['phone'],
-      //     'standard': value['standard'],
-      //     'email': value['email'],
-      //   });
-      // });
-
+     
       List<Map<String, dynamic>> students = [];
       data.forEach((key, value) {
         if (value['standard'] == standard) {
@@ -70,18 +59,6 @@ class ApiService {
   }
 
   // ✅ Add Attendance
-  // Future<void> addAttendance(
-  //     String studentId, String date, String status) async {
-  //   final response = await http.put(
-  //     Uri.parse('$baseUrl/attendance/$studentId/$date.json'),
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: jsonEncode({'status': status}),
-  //   );
-
-  //   if (response.statusCode != 200 && response.statusCode != 201) {
-  //     throw Exception('Failed to add attendance');
-  //   }
-  // }
   Future<void> addAttendance(String studentId, String date, String status) async {
   final response = await http.put(
     Uri.parse('$baseUrl/attendance/$date/$studentId.json'),
@@ -96,15 +73,6 @@ class ApiService {
 
 
   // ✅ Get Attendance
-  // Future<Map<String, dynamic>?> getAttendance() async {
-  //   final response = await http.get(Uri.parse('$baseUrl/attendance.json'));
-
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   } else {
-  //     throw Exception('Failed to load attendance');
-  //   }
-  // }
   Future<Map<String, String>> getAttendance(String date) async {
   final response = await http.get(Uri.parse('$baseUrl/attendance/$date.json'));
 
@@ -280,7 +248,7 @@ class ApiService {
     }
   }
 
-  // static fetchStudents(String standard) {}
+  static fetchStudents(String standard) {}
 
   getDailyAttendance(String today) {}
 
