@@ -186,6 +186,105 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:school/services/api_services.dart';
+
+// class HomeworkScreen extends StatefulWidget {
+//   const HomeworkScreen({super.key});
+
+//   @override
+//   _HomeworkScreenState createState() => _HomeworkScreenState();
+// }
+
+// class _HomeworkScreenState extends State<HomeworkScreen> {
+//   final ApiService apiService = ApiService();
+//   List<Map<String, dynamic>> homeworkList = [];
+//   bool isLoading = true;
+//   bool hasError = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchHomework(); // ✅ Fetch homework from API when screen loads
+//   }
+
+//   Future<void> fetchHomework() async {
+//     try {
+//       List<Map<String, dynamic>> fetchedHomework =
+//           await apiService.fetchHomework('Class 1');
+
+//       if (mounted) {
+//         setState(() {
+//           homeworkList = fetchedHomework;
+//           isLoading = false;
+//           hasError = false;
+//         });
+//       }
+//     } catch (e) {
+//       print("❌ Error fetching homework: $e");
+//       if (mounted) {
+//         setState(() {
+//           isLoading = false;
+//           hasError = true;
+//         });
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar:
+//           AppBar(title: Text("Homework"), backgroundColor: Colors.deepPurple),
+//       body: isLoading
+//           ? Center(child: CircularProgressIndicator()) // ✅ Show loading spinner
+//           : hasError
+//               ? Center(child: Text("❌ Failed to load homework. Try again."))
+//               : homeworkList.isEmpty
+//                   ? Center(child: Text("📚 No homework available."))
+//                   : ListView.builder(
+//                       padding: EdgeInsets.all(16),
+//                       itemCount: homeworkList.length,
+//                       itemBuilder: (context, index) {
+//                         return HomeworkCard(
+//                           subject: homeworkList[index]['subject'],
+//                           task: homeworkList[index]['description'],
+//                           time: homeworkList[index]['dueDate'],
+//                         );
+//                       },
+//                     ),
+//     );
+//   }
+// }
+
+// // ✅ Reusable Homework Card UI
+// class HomeworkCard extends StatelessWidget {
+//   final String subject;
+//   final String task;
+//   final String time;
+
+//   const HomeworkCard(
+//       {super.key,
+//       required this.subject,
+//       required this.task,
+//       required this.time});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Card(
+//       elevation: 3,
+//       margin: EdgeInsets.only(bottom: 12),
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+//       child: ListTile(
+//         leading: Icon(Icons.book, color: Colors.deepPurple),
+//         title: Text(subject, style: TextStyle(fontWeight: FontWeight.bold)),
+//         subtitle: Text(task),
+//         trailing: Text(time, style: TextStyle(color: Colors.grey)),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:school/services/api_services.dart';
 
@@ -201,6 +300,12 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
   List<Map<String, dynamic>> homeworkList = [];
   bool isLoading = true;
   bool hasError = false;
+
+  final List<Color> colors = [
+    Colors.blue.shade100,
+    Colors.pink.shade100,
+    Colors.green.shade100,
+  ];
 
   @override
   void initState() {
@@ -234,52 +339,121 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: Text("Homework"), backgroundColor: Colors.deepPurple),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator()) // ✅ Show loading spinner
-          : hasError
-              ? Center(child: Text("❌ Failed to load homework. Try again."))
-              : homeworkList.isEmpty
-                  ? Center(child: Text("📚 No homework available."))
-                  : ListView.builder(
-                      padding: EdgeInsets.all(16),
-                      itemCount: homeworkList.length,
-                      itemBuilder: (context, index) {
-                        return HomeworkCard(
-                          subject: homeworkList[index]['subject'],
-                          task: homeworkList[index]['description'],
-                          time: homeworkList[index]['dueDate'],
-                        );
-                      },
-                    ),
+      appBar: AppBar(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
+        backgroundColor: Colors.deepPurple,
+        elevation: 0,
+        title: const Text(
+          'Homework',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(16),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator()) // ✅ Show loading spinner
+            : hasError
+                ? const Center(
+                    child: Text("❌ Failed to load homework. Try again."))
+                : homeworkList.isEmpty
+                    ? const Center(child: Text("📚 No homework available."))
+                    : ListView.builder(
+                        itemCount: homeworkList.length,
+                        itemBuilder: (context, index) {
+                          return HomeworkCard(
+                            color: colors[index % colors.length],
+                            subject: homeworkList[index]['subject'],
+                            task: homeworkList[index]['description'],
+                            time: homeworkList[index]['dueDate'],
+                            onDelete: () {
+                              setState(() {
+                                homeworkList
+                                    .removeAt(index); // ✅ Remove dynamically
+                              });
+                            },
+                          );
+                        },
+                      ),
+      ),
     );
   }
 }
 
-// ✅ Reusable Homework Card UI
+// ✅ Reusable Homework Card with Colors
 class HomeworkCard extends StatelessWidget {
   final String subject;
   final String task;
   final String time;
+  final Color color;
+  final VoidCallback onDelete;
 
-  const HomeworkCard(
-      {super.key,
-      required this.subject,
-      required this.task,
-      required this.time});
+  const HomeworkCard({
+    super.key,
+    required this.subject,
+    required this.task,
+    required this.time,
+    required this.color,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      margin: EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: Icon(Icons.book, color: Colors.deepPurple),
-        title: Text(subject, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(task),
-        trailing: Text(time, style: TextStyle(color: Colors.grey)),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            subject,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            task,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                time,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
