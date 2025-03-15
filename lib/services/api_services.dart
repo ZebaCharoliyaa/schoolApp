@@ -36,7 +36,6 @@ class ApiService {
       final data = jsonDecode(response.body);
       if (data == null) return []; // Return empty list if no students exist
 
-     
       List<Map<String, dynamic>> students = [];
       data.forEach((key, value) {
         if (value['standard'] == standard) {
@@ -59,30 +58,32 @@ class ApiService {
   }
 
   // ✅ Add Attendance
-  Future<void> addAttendance(String studentId, String date, String status) async {
-  final response = await http.put(
-    Uri.parse('$baseUrl/attendance/$date/$studentId.json'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'status': status}),
-  );
+  Future<void> addAttendance(
+      String studentId, String date, String status) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/attendance/$date/$studentId.json'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'status': status}),
+    );
 
-  if (response.statusCode != 200 && response.statusCode != 201) {
-    throw Exception('Failed to add attendance');
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to add attendance');
+    }
   }
-}
-
 
   // ✅ Get Attendance
   Future<Map<String, String>> getAttendance(String date) async {
-  final response = await http.get(Uri.parse('$baseUrl/attendance/$date.json'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/attendance/$date.json'));
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body) ?? {};
-    return Map<String, String>.from(data.map((key, value) => MapEntry(key, value['status'])));
-  } else {
-    throw Exception('Failed to load attendance');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) ?? {};
+      return Map<String, String>.from(
+          data.map((key, value) => MapEntry(key, value['status'])));
+    } else {
+      throw Exception('Failed to load attendance');
+    }
   }
-}
 
   // ✅ Add Marksheet
   Future<void> addMarksheet(String studentId, String subject, int marks) async {
@@ -126,31 +127,6 @@ class ApiService {
       return false; // Failed to add notice
     }
   }
-
-  // ✅ Get Notices
-  // Future<List<Map<String, dynamic>>> getNotices() async {
-  //   final response = await http.get(Uri.parse('$baseUrl/notice_board.json'));
-
-  //   if (response.statusCode == 200) {
-  //     final Map<String, dynamic> data = jsonDecode(response.body);
-
-  //     // Convert API response to List<Map<String, dynamic>>
-  //     List<Map<String, dynamic>> noticesList = [];
-
-  //     data.forEach((key, value) {
-  //       noticesList.add({
-  //         'id': key,
-  //         'title': value['title'],
-  //         'content': value['content'],
-  //         'date': value['date'],
-  //       });
-  //     });
-
-  //     return noticesList;
-  //   } else {
-  //     throw Exception('Failed to load notices');
-  //   }
-  // }
 
   Future<List<Map<String, dynamic>>> getNotices() async {
     final response = await http.get(Uri.parse('$baseUrl/notice_board.json'));
@@ -221,10 +197,10 @@ class ApiService {
   }
 
   // ✅ Add Homework
-  Future<void> addHomework(String studentId, String subject, String description,
-      String dueDate) async {
+  Future<bool> addHomework(String standardId, String subject,
+      String description, String dueDate, String format) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/homework/$studentId/$subject.json'),
+      Uri.parse('$baseUrl/homework/$standardId/$subject.json'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'description': description,
@@ -232,9 +208,7 @@ class ApiService {
       }),
     );
 
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception('Failed to add homework');
-    }
+    return response.statusCode == 200 || response.statusCode == 201;
   }
 
   // ✅ Get Homework
