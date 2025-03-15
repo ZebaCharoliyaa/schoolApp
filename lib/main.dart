@@ -5,6 +5,7 @@ import 'package:school/homework.dart';
 import 'package:school/dashboard.dart';
 import 'package:school/fees.dart';
 import 'package:school/homework.dart';
+import 'package:school/registration.dart';
 import 'package:school/teacher/menu.dart';
 import 'package:school/dashboard.dart';
 // import 'package:school/signIn.dart';

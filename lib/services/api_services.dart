@@ -5,6 +5,33 @@ class ApiService {
   final String baseUrl =
       "https://school-c3c3a-default-rtdb.firebaseio.com"; // Use your Firebase database URL
 
+
+      // ✅ Register Student
+  Future<bool> registerStudent({
+    required String name,
+    required String dob,
+    required String phone,
+    required String standard,
+    required String email,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'dob': dob,
+        'phone': phone,
+        'standard': standard,
+        'email': email,
+        'password': password, // Store password securely (hashed if needed)
+      }),
+    );
+
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+  
+  
   // ✅ Add Student with return value
   Future<bool> addStudent(
       String name, String dob, String phone, String standard,
