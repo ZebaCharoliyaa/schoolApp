@@ -187,7 +187,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
-                      hintText: "Email",
+                      hintText: "Enter ID",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10)),
                     ),
