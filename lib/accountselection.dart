@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:school/dashboard.dart';
 import 'package:school/principle/dashboard.dart';
 import 'package:school/registration.dart';
+import 'package:school/services/auth_service.dart';
 import 'package:school/teacher/menu.dart';
 import 'package:school/services/api_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(RoleSelectionApp());
 
@@ -35,7 +37,8 @@ class RoleSelectionScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Select Your Role',
-          style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
+          style:
+              TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 0,
@@ -49,38 +52,31 @@ class RoleSelectionScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final role = roles[index];
                 return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     if (role['role'] == 'Student') {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => StudentRegistrationScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  StudentRegistrationScreen()));
                     } else {
-                      Navigator.push(context, createFadeScaleRoute(SignInScreen(role: role['role']!)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  SignInScreen(role: role['role']!)));
                     }
                   },
                   child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    margin: EdgeInsets.symmetric(vertical: 10),
                     elevation: 5,
-                    margin: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(colors: [Colors.deepPurple, Colors.deepPurple]),
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.white,
-                            child: Text(role['icon']!, style: TextStyle(fontSize: 24)),
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            role['role']!,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                        ],
-                      ),
+                    child: ListTile(
+                      leading:
+                          Text(role['icon']!, style: TextStyle(fontSize: 30)),
+                      title: Text(role['role']!,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      trailing: Icon(Icons.arrow_forward_ios, size: 16),
                     ),
                   ),
                 );
@@ -93,7 +89,7 @@ class RoleSelectionScreen extends StatelessWidget {
   }
 }
 
-// 🔹 Sign-In Screen (For Students, Teachers, Principals)
+// ✅ Sign-In Screen
 class SignInScreen extends StatefulWidget {
   final String role;
   const SignInScreen({required this.role});
@@ -102,37 +98,61 @@ class SignInScreen extends StatefulWidget {
   _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderStateMixin {
-  bool _rememberMe = false;
+class _SignInScreenState extends State<SignInScreen> {
   bool _isPasswordVisible = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 1500));
-    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-    _controller.forward();
+  Widget navigateToDashboard(String role) {
+    if (role == 'Student') return FirstPage();
+    if (role == 'Teacher') return Menu();
+    if (role == 'Principal') return TeacherDashboard();
+    return RoleSelectionScreen(); // Default screen if unknown role
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void navigateToRoleScreen() {
-    Widget nextScreen;
-    if (widget.role == 'Student') {
-      nextScreen = FirstPage();
-    } else if (widget.role == 'Teacher') {
-      nextScreen = Menu();
-    } else {
-      nextScreen = TeacherDashboard();
+  void handleSignIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("user_role", widget.role); // ✅ Save role
+    print("✅ Role Saved: ${widget.role}");
+    // navigateToRoleScreen(widget.role);
+    navigateToDashboard(widget.role);
+  }
+
+  void navigateToRoleScreen() async {
+    print("🔄 Checking User Role Before Saving...");
+
+    await AuthService.saveUserRole(widget.role); // ✅ Save role
+
+    String? userRole =
+        await AuthService.getUserRole(); // ✅ Retrieve stored role
+    if (userRole == null) {
+      print("❌ Error: No role found");
+      return;
     }
+
+    print("✅ Retrieved Role: $userRole");
+
+    // 🚀 Ensure correct dashboard navigation
+    Widget nextScreen;
+    if (userRole == 'student') {
+      nextScreen = FirstPage(); // 🎓 Student Dashboard
+    } else if (userRole == 'Teacher') {
+      nextScreen = Menu(); // 🧑‍🏫 Teacher Dashboard
+    } else if (userRole == 'Principal') {
+      nextScreen = TeacherDashboard(); // 👨‍💼 Principal Dashboard
+    } else {
+      print("❌ Unknown role, staying on login screen.");
+      return;
+    }
+
+    print("🚀 Navigating to: $userRole Dashboard");
 
     Navigator.pushReplacement(
       context,
@@ -144,98 +164,68 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple,
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Center(
-          child: SingleChildScrollView(
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Card(
+            elevation: 5,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                child: Padding(
-                  padding: EdgeInsets.all(25),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "${widget.role} Sign In",
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.deepPurple),
-                      ),
-                      SizedBox(height: 20),
-
-                      // Email Field
-                      TextField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
-                          hintText: "Email",
-                          filled: true,
-                          fillColor: Colors.deepPurple.shade50,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                        ),
-                      ),
-                      SizedBox(height: 15),
-
-                      // Password Field with Visibility Toggle
-                      TextField(
-                        controller: _passwordController,
-                        obscureText: !_isPasswordVisible,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
-                          hintText: "Password",
-                          filled: true,
-                          fillColor: Colors.deepPurple.shade50,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                          suffixIcon: IconButton(
-                            icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.deepPurple),
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15),
-
-                      // Remember Me Checkbox
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            onChanged: (value) => setState(() => _rememberMe = value!),
-                            activeColor: Colors.deepPurple,
-                          ),
-                          Text("Remember Me", style: TextStyle(fontSize: 16, color: Colors.deepPurple)),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-
-                      // Sign In Button
-                      ElevatedButton(
-                        onPressed: navigateToRoleScreen,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple,
-                          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        child: Text("Sign In", style: TextStyle(fontSize: 18, color: Colors.white)),
-                      ),
-
-                      SizedBox(height: 10),
-
-                      // Forgot Password Button
-                      TextButton(
-                        onPressed: () {
-                          // Navigate to Forgot Password Screen
-                        },
-                        child: Text("Forgot Password?", style: TextStyle(fontSize: 16, color: Colors.deepPurple)),
-                      ),
-                    ],
+              padding: EdgeInsets.all(25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("${widget.role} Sign In",
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple)),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
+                      hintText: "Email",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
                   ),
-                ),
+                  SizedBox(height: 15),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
+                      hintText: "Password",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.deepPurple),
+                        onPressed: () => setState(
+                            () => _isPasswordVisible = !_isPasswordVisible),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  ElevatedButton(
+                    onPressed: navigateToRoleScreen,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple),
+                    child: Text("Sign In",
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                  ),
+                  TextButton(
+                      onPressed: () {},
+                      child: Text("Forgot Password?",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.deepPurple))),
+                ],
               ),
             ),
           ),
@@ -243,25 +233,4 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
       ),
     );
   }
-}
-
-// 🔹 Smooth Transition Function
-Route createFadeScaleRoute(Widget page) {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => page,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: animation, curve: Curves.easeInOut),
-      );
-
-      final scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-        CurvedAnimation(parent: animation, curve: Curves.easeInOut),
-      );
-
-      return FadeTransition(
-        opacity: fadeAnimation,
-        child: ScaleTransition(scale: scaleAnimation, child: child),
-      );
-    },
-  );
 }

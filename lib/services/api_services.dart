@@ -13,6 +13,8 @@ class ApiService {
     required String standard,
     required String email,
     required String password,
+    required String grNo,
+    required String studentID,
   }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
@@ -29,8 +31,7 @@ class ApiService {
 
     return response.statusCode == 200 || response.statusCode == 201;
   }
-  
-  
+
   // ✅ Add Student with return value
   Future<bool> addStudent(
       String name, String dob, String phone, String standard,
@@ -62,7 +63,6 @@ class ApiService {
       final data = jsonDecode(response.body);
       if (data == null) return []; // Return empty list if no students exist
 
-     
       List<Map<String, dynamic>> students = [];
       data.forEach((key, value) {
         if (value['standard'] == standard) {
@@ -85,50 +85,55 @@ class ApiService {
   }
 
   // ✅ Add Attendance
-  Future<void> addAttendance(String studentId, String date, String status) async {
-  final response = await http.put(
-    Uri.parse('$baseUrl/attendance/$date/$studentId.json'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'status': status}),
-  );
+  Future<void> addAttendance(
+      String studentId, String date, String status) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/attendance/$date/$studentId.json'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'status': status}),
+    );
 
-  if (response.statusCode != 200 && response.statusCode != 201) {
-    throw Exception('Failed to add attendance');
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to add attendance');
+    }
   }
-}
-
 
   // ✅ Get Attendance
   Future<Map<String, String>> getAttendance(String date) async {
-  final response = await http.get(Uri.parse('$baseUrl/attendance/$date.json'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/attendance/$date.json'));
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body) ?? {};
-    return Map<String, String>.from(data.map((key, value) => MapEntry(key, value['status'])));
-  } else {
-    throw Exception('Failed to load attendance');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) ?? {};
+      return Map<String, String>.from(
+          data.map((key, value) => MapEntry(key, value['status'])));
+    } else {
+      throw Exception('Failed to load attendance');
+    }
   }
-}
+
 // ✅ Get monthly Attendance
-Future<Map<String, String>> getStudentMonthlyAttendance(String standard, String studentId, String month) async {
-  final response = await http.get(Uri.parse('$baseUrl/attendance/$standard/$month/$studentId.json'));
+  Future<Map<String, String>> getStudentMonthlyAttendance(
+      String standard, String studentId, String month) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/attendance/$standard/$month/$studentId.json'));
 
-  if (response.statusCode == 200) {
-    if (response.body == "null" || response.body.isEmpty) {
+    if (response.statusCode == 200) {
+      if (response.body == "null" || response.body.isEmpty) {
+        return {};
+      }
+
+      final Map<String, dynamic>? data = jsonDecode(response.body);
+
+      if (data == null || data.isEmpty) {
+        return {};
+      }
+      // ✅ Convert all values to String
+      return data.map((key, value) => MapEntry(key, value.toString()));
+    } else {
       return {};
     }
-
-    final Map<String, dynamic>? data = jsonDecode(response.body);
-    
-    if (data == null || data.isEmpty) {
-      return {};
-    }
-    // ✅ Convert all values to String
-    return data.map((key, value) => MapEntry(key, value.toString()));
-  } else {
-    return {};
   }
-}
 
   // ✅ Add Marksheet
   Future<void> addMarksheet(String studentId, String subject, int marks) async {
@@ -243,54 +248,59 @@ Future<Map<String, String>> getStudentMonthlyAttendance(String standard, String 
   }
 
   // ✅ Add Homework
-  Future<bool> addHomework(String standard, String subject, String description, String dueDate, String format) async {
-  final response = await http.put(
-    Uri.parse('$baseUrl/homework/$standard/$subject.json'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'description': description,
-      'dueDate': dueDate,
-    }),
-  );
+  Future<bool> addHomework(String standard, String subject, String title,
+      String description, String dueDate) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/homework/$standard/$subject.json'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'title': title, // ✅ Store title
+        'description': description,
+        'dueDate': dueDate,
+      }),
+    );
 
-  // ✅ Return true for success and false for failure
-  return response.statusCode == 200 || response.statusCode == 201;
-}
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
 
-  // // ✅ Get Homework
-  // Future<Map<String, dynamic>?> getHomework(String s) async {
-  //   final response = await http.get(Uri.parse('$baseUrl/homework.json'));
-
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   } else {
-  //     throw Exception('Failed to load homework');
-  //   }
-  // }
-
-  // ✅ Fetch Homework Function
+  // ✅ Fetch Homework with Title
   Future<List<Map<String, dynamic>>> fetchHomework(String standardId) async {
     try {
-      final response =
-          await http.get(Uri.parse('$baseUrl/homework/$standardId.json'));
+      print("🔍 Fetching homework for Standard ID: $standardId");
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/homework/$standardId.json'),
+      );
+
+      print("📝 Firebase Response: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic>? data = jsonDecode(response.body);
-        if (data == null) return [];
 
-        return data.entries.map((entry) {
-          return {
-            'subject': entry.key,
-            'description': entry.value['description'],
-            'dueDate': entry.value['dueDate'],
-          };
-        }).toList();
+        if (data == null) {
+          print("⚠️ No homework found for Standard ID: $standardId");
+          return [];
+        }
+
+        List<Map<String, dynamic>> homeworkList = [];
+
+        data.forEach((subject, details) {
+          homeworkList.add({
+            'subject': subject, // ✅ Add subject name
+            'title': details['title'] ?? 'No Title',
+            'description': details['description'] ?? 'No Description',
+            'dueDate': details['dueDate'] ?? 'No Due Date',
+          });
+        });
+
+        return homeworkList;
       } else {
-        print("❌ Failed to fetch homework: ${response.body}");
+        print(
+            "❌ Failed to fetch homework: ${response.statusCode} - ${response.body}");
         return [];
       }
     } catch (e) {
-      print("❌ Error: $e");
+      print("❌ Error fetching homework: $e");
       return [];
     }
   }
@@ -302,5 +312,4 @@ Future<Map<String, String>> getStudentMonthlyAttendance(String standard, String 
   submitAttendance(String today, Map<String, String> attendance) {}
 
   getMonthlyAttendance(String selectedStandard, String selectedMonth) {}
-
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:school/accountselection.dart';
 import 'package:school/dashboard.dart';
 import 'package:school/services/api_services.dart';
+import 'package:school/services/auth_service.dart';
 
 class StudentRegistrationScreen extends StatefulWidget {
   @override
@@ -16,10 +18,11 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _grNoController = TextEditingController();
+  String? _studentID;
 
   String? _selectedStandard;
   DateTime? _selectedDate;
-  bool _rememberMe = false;
   bool _isPasswordVisible = false; // Toggle password visibility
 
   final List<String> _standards = [
@@ -62,11 +65,19 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
     }
   }
 
+  String _generateStudentID() {
+    String namePart =
+        _nameController.text.trim().toLowerCase().replaceAll(" ", "");
+    String grPart = _grNoController.text.trim();
+    return "${grPart}_$namePart";
+  }
+
   void _registerStudent() async {
     if (_nameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _phoneController.text.isEmpty ||
         _passwordController.text.isEmpty ||
+        _grNoController.text.isEmpty ||
         _selectedStandard == null ||
         _selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -75,6 +86,10 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
       return;
     }
 
+    setState(() {
+      _studentID = _generateStudentID();
+    });
+
     bool success = await apiService.registerStudent(
       name: _nameController.text,
       dob: DateFormat('dd-MM-yyyy').format(_selectedDate!),
@@ -82,24 +97,67 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
       standard: _selectedStandard!,
       email: _emailController.text,
       password: _passwordController.text,
+      grNo: _grNoController.text,
+      studentID: _studentID!,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(success
-            ? "Registration Successful!"
-            : "Registration Failed! Try again."),
-      ),
-    );
+    if (success) {
+      print("✅ Registration successful. Saving standard ID...");
+      await AuthService.saveStandardId(_selectedStandard!); // Save standard ID
 
-    if (success)
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SignInScreen(
-              role: 'student',
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Registration Successful!")),
+      );
+
+      _showStudentIDDialog(_studentID!);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Registration Failed! Try again.")),
+      );
+    }
+  }
+
+  void _showStudentIDDialog(String studentID) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Registration Successful"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    "Your Student ID: $studentID\nPlease save this ID for login."),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: studentID));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Student ID copied to clipboard!")));
+                  },
+                  child: Text("Copy Student ID"),
+                ),
+              ],
             ),
-          ));
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignInScreen(
+                        // studentId: studentID,
+                        role: 'student',
+                      ),
+                    ),
+                  );
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -129,7 +187,6 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
-
                     // Full Name Field
                     TextField(
                       controller: _nameController,
@@ -235,7 +292,23 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                     ),
                     SizedBox(height: 15),
 
-                    // Date Picker for DOB
+                    // GR No. Field
+                    TextField(
+                      controller: _grNoController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.confirmation_number,
+                            color: Colors.deepPurple),
+                        hintText: "GR No.",
+                        filled: true,
+                        fillColor: Colors.deepPurple.shade50,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+// Date Picker for DOB
                     GestureDetector(
                       onTap: _pickDate,
                       child: InputDecorator(
@@ -259,7 +332,6 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
-
                     // Register Button
                     ElevatedButton(
                       onPressed: _registerStudent,
@@ -281,8 +353,7 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    SignInScreen(role: 'Student')));
+                                builder: (context) => SignInScreen(role: '')));
                       },
                       child: Text("Already have an account? Sign In",
                           style: TextStyle(

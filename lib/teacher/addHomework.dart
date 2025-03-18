@@ -18,7 +18,7 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
       ApiService(); // Ensure apiService is initialized
 
   final List<String> _standards = [
-     '1-A',
+    '1-A',
     '1-B',
     '2-A',
     '2-B',
@@ -43,29 +43,29 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
   ];
 
   final Map<String, List<String>> _subjectsByStandard = {
-  '1-A': ['Mathematics', 'English'],
-  '1-B': ['Mathematics', 'English'],
-  '2-A': ['Mathematics', 'Science'],
-  '2-B': ['Mathematics', 'Science'],
-  '3-A': ['Mathematics', 'English', 'Science'],
-  '3-B': ['Mathematics', 'English', 'Science'],
-  '4-A': ['Mathematics', 'Science', 'History'],
-  '4-B': ['Mathematics', 'Science', 'History'],
-  '5-A': ['Mathematics', 'Science', 'English', 'History'],
-  '5-B': ['Mathematics', 'Science', 'English', 'History'],
-  '6-A': ['Mathematics', 'Science', 'Geography'],
-  '6-B': ['Mathematics', 'Science', 'Geography'],
-  '7-A': ['Mathematics', 'Science', 'English', 'Geography'],
-  '7-B': ['Mathematics', 'Science', 'English', 'Geography'],
-  '8-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-  '8-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-  '9-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-  '9-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-  '10-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-  '10-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
-  '11': ['Account', 'State', 'OCM', 'Eco', 'English'],
-  '12': ['Account', 'State', 'OCM', 'Eco', 'English'],
-};
+    '1-A': ['Mathematics', 'English'],
+    '1-B': ['Mathematics', 'English'],
+    '2-A': ['Mathematics', 'Science'],
+    '2-B': ['Mathematics', 'Science'],
+    '3-A': ['Mathematics', 'English', 'Science'],
+    '3-B': ['Mathematics', 'English', 'Science'],
+    '4-A': ['Mathematics', 'Science', 'History'],
+    '4-B': ['Mathematics', 'Science', 'History'],
+    '5-A': ['Mathematics', 'Science', 'English', 'History'],
+    '5-B': ['Mathematics', 'Science', 'English', 'History'],
+    '6-A': ['Mathematics', 'Science', 'Geography'],
+    '6-B': ['Mathematics', 'Science', 'Geography'],
+    '7-A': ['Mathematics', 'Science', 'English', 'Geography'],
+    '7-B': ['Mathematics', 'Science', 'English', 'Geography'],
+    '8-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+    '8-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+    '9-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+    '9-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+    '10-A': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+    '10-B': ['Mathematics', 'Science', 'English', 'History', 'Geography'],
+    '11': ['Account', 'State', 'OCM', 'Eco', 'English'],
+    '12': ['Account', 'State', 'OCM', 'Eco', 'English'],
+  };
   @override
   void dispose() {
     _titleController.dispose();
@@ -90,7 +90,7 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
       bool success = await apiService.addHomework(
         _selectedStandard!,
         _selectedSubject!,
-        _titleController.text, // Include title field
+        _titleController.text, // ✅ Ensure title is included
         _descriptionController.text,
         DateFormat('yyyy-MM-dd').format(_selectedDate!),
       );

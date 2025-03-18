@@ -5,15 +5,20 @@ import 'package:school/homework.dart';
 import 'package:school/dashboard.dart';
 import 'package:school/fees.dart';
 import 'package:school/homework.dart';
+import 'package:school/principle/dashboard.dart';
 import 'package:school/registration.dart';
+import 'package:school/services/auth_service.dart';
 import 'package:school/teacher/menu.dart';
 import 'package:school/dashboard.dart';
 // import 'package:school/signIn.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:school/splash1.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  String? role = await AuthService.getUserRole(); // ✅ Get stored role
+  runApp(MyApp(startScreen: role));
   try {
     await Firebase.initializeApp();
     if (Firebase.apps.isNotEmpty) {
@@ -25,22 +30,27 @@ void main() async {
   } catch (e) {
     print("Error initializing Firebase: $e");
   }
-
-//   await Firebase.initializeApp();
-//   print("Firebase Initialized Successfully!");
-  runApp(const MyApp());
-// }
-
+  // runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? startScreen;
+
+  const MyApp({super.key, this.startScreen});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      home: startScreen == 'Student'
+          ? FirstPage()
+          : startScreen == 'Teacher'
+              ? Menu()
+              : startScreen == 'Principal'
+                  ? TeacherDashboard()
+                  : RoleSelectionScreen(),
+
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -62,9 +72,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: RoleSelectionApp(),
+      // home: RoleSelectionApp(),
     );
   }
+}
+
+Future<String?> getStoredRole() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString("user_role"); // ✅ Load role from storage
 }
 
 class MyHomePage extends StatefulWidget {
