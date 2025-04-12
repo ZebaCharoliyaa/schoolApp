@@ -128,20 +128,26 @@ class _SignInScreenState extends State<SignInScreen> {
   void navigateToRoleScreen() async {
     print("🔄 Checking User Role Before Saving...");
 
-    await AuthService.saveUserRole(widget.role); // ✅ Save role
+    if (widget.role.trim().isEmpty) {
+      print("❌ Empty role passed. Aborting navigation.");
+      return;
+    }
+
+    // 🔧 Normalize role to first letter capital (like: Student, Teacher)
+    String normalizedRole = widget.role.trim().toLowerCase();
+    normalizedRole =
+        normalizedRole[0].toUpperCase() + normalizedRole.substring(1);
+
+    await AuthService.saveUserRole(normalizedRole); // ✅ Save normalized role
 
     String? userRole =
         await AuthService.getUserRole(); // ✅ Retrieve stored role
-    if (userRole == null) {
-      print("❌ Error: No role found");
-      return;
-    }
 
     print("✅ Retrieved Role: $userRole");
 
     // 🚀 Ensure correct dashboard navigation
     Widget nextScreen;
-    if (userRole == 'student') {
+    if (userRole == 'Student') {
       nextScreen = FirstPage(); // 🎓 Student Dashboard
     } else if (userRole == 'Teacher') {
       nextScreen = Menu(); // 🧑‍🏫 Teacher Dashboard

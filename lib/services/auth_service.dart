@@ -1,6 +1,24 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
+// Save role selection flag
+  static Future<void> setRoleSelected(bool selected) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isRoleSelected', selected);
+  }
+
+// Get role selection flag
+  static Future<bool> isRoleSelected() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isRoleSelected') ?? false;
+  }
+
+// Clear everything on logout
+  static Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
   static Future<void> saveUserRole(String role) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userRole', role);

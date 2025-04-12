@@ -148,7 +148,7 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                     MaterialPageRoute(
                       builder: (context) => SignInScreen(
                         // studentId: studentID,
-                        role: 'student',
+                        role: 'Student',
                       ),
                     ),
                   );
