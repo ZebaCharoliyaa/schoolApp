@@ -25,12 +25,6 @@ class AuthService {
     print("✅ User Role Saved: $role"); // Debugging log
   }
 
-  // Clear everything on logout
-  static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-  }
-
   static Future<String?> getUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     String? role = prefs.getString('userRole');
