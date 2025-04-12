@@ -286,6 +286,7 @@ class ApiService {
 
         data.forEach((subject, details) {
           homeworkList.add({
+            'id': subject,
             'subject': subject, // ✅ Add subject name
             'title': details['title'] ?? 'No Title',
             'description': details['description'] ?? 'No Description',
@@ -302,6 +303,30 @@ class ApiService {
     } catch (e) {
       print("❌ Error fetching homework: $e");
       return [];
+    }
+  }
+
+  //delete homework
+  Future<bool> deleteHomework(String homeworkId) async {
+    final String url = "$baseUrl/homework/$homeworkId.json"; // ✅ Append .json
+
+    print("🔗 Sending DELETE request to: $url"); // Debug log
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+
+      print("📝 Firebase Response: ${response.body}"); // Debug log
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("✅ Homework deleted successfully!");
+        return true;
+      } else {
+        print("❌ Error deleting homework: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("❌ Exception: $e");
+      return false;
     }
   }
 

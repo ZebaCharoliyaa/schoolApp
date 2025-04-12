@@ -182,18 +182,17 @@ class _FirstPageState extends State<FirstPage> {
               ? Center(child: CircularProgressIndicator())
               : homeworkList.isEmpty
                   ? Center(child: Text("No homework available."))
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: homeworkList.length,
-                      itemBuilder: (context, index) {
-                        final homework = homeworkList[index];
-                        return _buildCard(
-                            homework['subject'],
-                            "Title: ${homework['title']}\nDue Date: ${homework['dueDate']}\nDescription: ${homework['description']}",
-                            index,
-                            Icons.book);
-                      },
+                  : Column(
+                      children: homeworkList.map((homework) {
+                        return HomeworkCard(
+                          color: Colors.blue[100], // You can customize colors
+                          subject: homework['subject'] ?? "No Subject",
+                          title: homework['title'] ?? "No Title",
+                          description:
+                              homework['description'] ?? "No Description",
+                          time: homework['dueDate'] ?? "No Due Date",
+                        );
+                      }).toList(),
                     ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:school/services/api_services.dart';
+import 'package:school/teacher/homework_history.dart';
 
 class AddHomeworkScreen extends StatefulWidget {
   @override
@@ -242,6 +243,18 @@ class _AddHomeworkScreenState extends State<AddHomeworkScreen>
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeworkHistoryScreen(),
+            ),
+          );
+        },
+        child: Icon(Icons.history, color: Colors.white),
+        backgroundColor: Colors.deepPurple,
       ),
     );
   }
