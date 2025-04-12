@@ -20,12 +20,15 @@ class ApiService {
       Uri.parse('$baseUrl/students.json'), // Firebase auto-generates an ID
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
+        'id': studentID,
         'name': name,
         'dob': dob,
         'phone': phone,
         'standard': standard,
         'email': email,
-        'password': password, // Store password securely (hashed if needed)
+        'password': password,
+        'grNo': grNo, // <-- ✅ Include this
+        'studentID': studentID, // Store password securely (hashed if needed)
       }),
     );
 
