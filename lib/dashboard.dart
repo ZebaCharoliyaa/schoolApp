@@ -114,7 +114,8 @@ class _FirstPageState extends State<FirstPage> {
               Icons.description, 'Report Card', ReportCardListScreen()),
           _buildDrawerItem(
               Icons.line_weight_outlined, 'Notice Board', NoticeBoard()),
-          _buildDrawerItem(Icons.logout_outlined, 'Log Out', RoleSelectionApp(),
+          _buildDrawerItem(
+              Icons.logout_outlined, 'Log Out', RoleSelectionScreen(),
               isLogout: true),
         ],
       ),
@@ -126,12 +127,16 @@ class _FirstPageState extends State<FirstPage> {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      onTap: () {
-        Navigator.pop(context);
+      onTap: () async {
+        // Navigator.pop(context);
         if (isLogout) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => screen));
-        } else {
+          await AuthService.logout();
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => RoleSelectionScreen()),
+            (route) => false,
+          );
+        } else if (screen != null) {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => screen));
         }
