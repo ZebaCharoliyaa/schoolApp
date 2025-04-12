@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:school/accountselection.dart';
 import 'package:school/naticeBoard.dart';
+import 'package:school/services/auth_service.dart';
 import 'package:school/teacher/addNotice.dart';
+import 'package:school/auth_service.dart'; // For clearing session
+
 
 void main() {
   runApp(TeacherDashboardApp());
@@ -17,6 +21,70 @@ class TeacherDashboardApp extends StatelessWidget {
   }
 }
 
+// class TeacherDashboard extends StatelessWidget {
+//   final List<Map<String, dynamic>> gridItems = [
+//     {
+//       'title': 'Add Teacher',
+//       'icon': Icons.person_add,
+//       'route': TeacherFormScreen()
+//     },
+//     {
+//       'title': 'Notice Board',
+//       'icon': Icons.notifications,
+//       'route': AdminNoticeBoard()
+//     },
+//     // {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
+//   ];
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text("Admin Dashboard")),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: GridView.builder(
+//           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//             crossAxisCount: 2, // 2 columns
+//             crossAxisSpacing: 16,
+//             mainAxisSpacing: 16,
+//             childAspectRatio: 1.2, // Adjust aspect ratio
+//           ),
+//           itemCount: gridItems.length,
+//           itemBuilder: (context, index) {
+//             return InkWell(
+//               onTap: () {
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                       builder: (context) => gridItems[index]['route']),
+//                 );
+//               },
+//               child: Card(
+//                 shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(16)),
+//                 elevation: 5,
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     Icon(gridItems[index]['icon'],
+//                         size: 50, color: Colors.deepPurple),
+//                     SizedBox(height: 10),
+//                     Text(
+//                       gridItems[index]['title'],
+//                       style:
+//                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         ),
+        
+//       ),
+//     );
+//   }
+// }
 class TeacherDashboard extends StatelessWidget {
   final List<Map<String, dynamic>> gridItems = [
     {
@@ -29,8 +97,16 @@ class TeacherDashboard extends StatelessWidget {
       'icon': Icons.notifications,
       'route': AdminNoticeBoard()
     },
-    // {'title': 'Show Report', 'icon': Icons.assessment, 'route': ShowReport()},
   ];
+
+  void logout(BuildContext context) async {
+    await AuthService.logout(); // Clear SharedPreferences or role
+    print("🚪 Logged out, session cleared.");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => RoleSelectionScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +116,10 @@ class TeacherDashboard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 columns
+            crossAxisCount: 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 1.2, // Adjust aspect ratio
+            childAspectRatio: 1.2,
           ),
           itemCount: gridItems.length,
           itemBuilder: (context, index) {
@@ -67,8 +143,8 @@ class TeacherDashboard extends StatelessWidget {
                     SizedBox(height: 10),
                     Text(
                       gridItems[index]['title'],
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -76,6 +152,12 @@ class TeacherDashboard extends StatelessWidget {
             );
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => logout(context),
+        backgroundColor: Colors.deepPurple,
+        child: Icon(Icons.logout,color: Colors.white,),
+        tooltip: 'Logout',
       ),
     );
   }
