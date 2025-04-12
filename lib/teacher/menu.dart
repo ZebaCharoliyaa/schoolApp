@@ -122,8 +122,6 @@ class Menu extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => logout(context), // Call the logout method when pressed
-        child: Icon(Icons.logout),
-        onPressed: () => logout(context), // Call the logout method when pressed
         child: Icon(
           Icons.logout,
           color: Colors.white,
