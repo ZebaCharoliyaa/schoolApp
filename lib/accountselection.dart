@@ -70,13 +70,42 @@ class RoleSelectionScreen extends StatelessWidget {
                   child: Card(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     elevation: 5,
-                    child: ListTile(
-                      leading:
-                          Text(role['icon']!, style: TextStyle(fontSize: 30)),
-                      title: Text(role['role']!,
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Container(
+                      height: 90,
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple, // Card background
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          // Circle Avatar for icon
+                          CircleAvatar(
+                            radius: 24,
+                            backgroundColor: Colors.white,
+                            child: Text(
+                              role['icon']!,
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              role['role']!,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white, // White font color
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward_ios,
+                              size: 16, color: Colors.white),
+                        ],
+                      ),
                     ),
                   ),
                 );
