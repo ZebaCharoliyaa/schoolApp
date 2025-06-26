@@ -1,20 +1,6 @@
-//new code as fetch data ....
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:school/services/api_services.dart';
-
-void main() => runApp(AttendanceApp());
-
-class AttendanceApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: AttendanceScreen(),
-    );
-  }
-}
 
 class AttendanceScreen extends StatefulWidget {
   @override
@@ -27,8 +13,9 @@ class _AttendanceScreenState extends State<AttendanceScreen>
   final ApiService apiService = ApiService();
 
   String selectedStandard = '10-A';
-  String selectedMonth = 'January';
+  String selectedMonth = 'June';
   List<Map<String, dynamic>> students = [];
+  Map<String, Map<String, String>> monthlyAttendance = {};
   bool isLoading = false;
 
   final List<String> standards = [
@@ -81,7 +68,8 @@ class _AttendanceScreenState extends State<AttendanceScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    fetchStudents(); // ✅ Fetch students when the screen loads
+    fetchStudents();
+    fetchMonthly();
   }
 
   Future<void> fetchStudents() async {
@@ -93,10 +81,52 @@ class _AttendanceScreenState extends State<AttendanceScreen>
         student['absent'] = false;
       }
     } catch (e) {
-      print("Error fetching students: $e");
       students = [];
     }
     setState(() => isLoading = false);
+  }
+
+  Future<void> fetchMonthly() async {
+    final year = DateTime.now().year.toString();
+    final data = await apiService.getMonthlyAttendance(
+        selectedStandard, year, selectedMonth);
+    setState(() => monthlyAttendance = data);
+  }
+
+  void onMonthChanged(String? value) {
+    if (value != null) {
+      setState(() => selectedMonth = value);
+      fetchMonthly();
+    }
+  }
+
+  void onStandardChanged(String? value) {
+    if (value != null) {
+      setState(() => selectedStandard = value);
+      fetchStudents();
+      fetchMonthly();
+    }
+  }
+
+  Future<void> submitAttendance() async {
+    final now = DateTime.now();
+    final String year = now.year.toString();
+    final String month = months[now.month - 1];
+    final String day = now.day.toString();
+
+    await apiService.submitAttendance(
+      selectedStandard,
+      year,
+      month,
+      day,
+      students,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Attendance Submitted!")),
+    );
+
+    fetchMonthly();
   }
 
   @override
@@ -141,30 +171,18 @@ class _AttendanceScreenState extends State<AttendanceScreen>
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Select Standard:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              DropdownButton<String>(
-                value: selectedStandard,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedStandard = newValue!;
-                  });
-                  fetchStudents(); // ✅ Fetch students dynamically
-                },
-                items: standards.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: TextStyle(color: Colors.black)),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text('Select Standard:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            DropdownButton<String>(
+              value: selectedStandard,
+              onChanged: onStandardChanged,
+              items: standards
+                  .map((val) => DropdownMenuItem(value: val, child: Text(val)))
+                  .toList(),
+            ),
+          ]),
           SizedBox(height: 16),
           if (isLoading)
             Center(child: CircularProgressIndicator())
@@ -181,7 +199,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Colors.deepPurple,
-                              child: Text(student['name'][0],
+                              child: Text(student['name'][0].toUpperCase(),
                                   style: TextStyle(color: Colors.white)),
                             ),
                             title: Text(student['name']),
@@ -233,23 +251,16 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Total Students: ${students.length}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text('Present: $totalPresent, Absent: $totalAbsent',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                  ],
-                ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Total Students: ${students.length}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text('Present: $totalPresent, Absent: $totalAbsent',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ]),
                 ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Attendance Submitted!")),
-                    );
-                  },
+                  onPressed: submitAttendance,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple),
                   child: Text('Submit', style: TextStyle(color: Colors.white)),
@@ -263,64 +274,49 @@ class _AttendanceScreenState extends State<AttendanceScreen>
   }
 
   Widget _buildMonthlyAttendance() {
-    final Map<String, List<String>> monthlyData = {
-      for (var student in students)
-        student['name']:
-            List.generate(30, (index) => index % 2 == 0 ? 'P' : 'A'),
-    };
-
-    final totalPresent = monthlyData.values
-        .expand((days) => days)
-        .where((status) => status == 'P')
+    final totalPresent = monthlyAttendance.values
+        .expand((m) => m.values)
+        .where((s) => s == 'P')
         .length;
-    final totalAbsent = monthlyData.values
-        .expand((days) => days)
-        .where((status) => status == 'A')
+    final totalAbsent = monthlyAttendance.values
+        .expand((m) => m.values)
+        .where((s) => s == 'A')
         .length;
 
     return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Select Month:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              DropdownButton<String>(
-                value: selectedMonth,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedMonth = newValue!;
-                  });
-                },
-                items: months.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: TextStyle(color: Colors.black)),
-                  );
-                }).toList(),
-              ),
-            ],
+      padding: EdgeInsets.all(16),
+      child: Column(children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text('Select Month:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          DropdownButton<String>(
+            value: selectedMonth,
+            onChanged: onMonthChanged,
+            items: months
+                .map((m) => DropdownMenuItem(value: m, child: Text(m)))
+                .toList(),
           ),
-          SizedBox(height: 16),
-          Text('Total Present: $totalPresent\nTotal Absent: $totalAbsent',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          SizedBox(height: 16),
-          Expanded(
-            child: ListView(
-              children: monthlyData.entries.map((entry) {
-                return ListTile(
-                  title: Text(entry.key),
-                  subtitle: Text(
-                      'Present: ${entry.value.where((s) => s == "P").length}, Absent: ${entry.value.where((s) => s == "A").length}'),
-                );
-              }).toList(),
-            ),
+        ]),
+        SizedBox(height: 16),
+        Text('Total Present: $totalPresent\nTotal Absent: $totalAbsent',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        SizedBox(height: 16),
+        Expanded(
+          child: ListView(
+            children: monthlyAttendance.entries.map((entry) {
+              final name = entry.key;
+              final records = entry.value;
+              final p = records.values.where((s) => s == 'P').length;
+              final a = records.values.where((s) => s == 'A').length;
+
+              return ListTile(
+                title: Text(name),
+                subtitle: Text('Present: $p, Absent: $a'),
+              );
+            }).toList(),
           ),
-        ],
-      ),
+        )
+      ]),
     );
   }
 }
