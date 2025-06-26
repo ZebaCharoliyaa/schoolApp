@@ -363,7 +363,7 @@ class ApiService {
     required String studentID,
   }) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/students.json'),
+      Uri.parse('$baseUrl/students/$standard.json'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'id': studentID,
@@ -375,16 +375,46 @@ class ApiService {
         'password': password,
         'grNo': grNo,
         'studentID': studentID,
+        'fcmToken': '', // You can set this later when token is available
       }),
     );
     return response.statusCode == 200 || response.statusCode == 201;
   }
 
-  // ✅ Add Student
+  // ✅ Add Notice
+  Future<bool> addNotice(String title, String content) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/notice_board.json'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'title': title,
+        'content': content,
+        'date': DateTime.now().toIso8601String(),
+      }),
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  // ✅ Add Homework (as child under standard and subject, to trigger cloud function)
+  Future<bool> addHomework(String standard, String subject, String title,
+      String description, String dueDate) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/homework/$standard/$subject.json'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'title': title,
+        'description': description,
+        'dueDate': dueDate,
+      }),
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  // ✅ Add Student (default fallback)
   Future<bool> addStudent(String name, String dob, String phone, String standard,
       {required String email}) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/students.json'),
+      Uri.parse('$baseUrl/students/$standard.json'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': name,
@@ -399,22 +429,21 @@ class ApiService {
 
   // ✅ Get Students
   Future<List<Map<String, dynamic>>> getStudents(String standard) async {
-    final response = await http.get(Uri.parse('$baseUrl/students.json'));
+    final response = await http.get(Uri.parse('$baseUrl/students/$standard.json'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data == null) return [];
       List<Map<String, dynamic>> students = [];
       data.forEach((key, value) {
-        if (value['standard'] == standard) {
-          students.add({
-            'id': key,
-            'name': value['name'],
-            'dob': value['dob'],
-            'phone': value['phone'],
-            'standard': value['standard'],
-            'email': value['email'],
-          });
-        }
+        students.add({
+          'id': key,
+          'name': value['name'],
+          'dob': value['dob'],
+          'phone': value['phone'],
+          'standard': value['standard'],
+          'email': value['email'],
+          'fcmToken': value['fcmToken'],
+        });
       });
       return students;
     } else {
@@ -506,19 +535,6 @@ class ApiService {
     }
   }
 
-  // ✅ Add Notice
-  Future<bool> addNotice(String title, String content) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/notice_board.json'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'title': title,
-        'date': DateTime.now().toIso8601String(),
-      }),
-    );
-    return response.statusCode == 200 || response.statusCode == 201;
-  }
-
   // ✅ Get Notices
   Future<List<Map<String, dynamic>>> getNotices() async {
     final response = await http.get(Uri.parse('$baseUrl/notice_board.json'));
@@ -558,21 +574,6 @@ class ApiService {
     return response.statusCode == 200;
   }
 
-  // ✅ Add Homework
-  Future<bool> addHomework(String standard, String subject, String title,
-      String description, String dueDate) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/homework/$standard/$subject.json'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'title': title,
-        'description': description,
-        'dueDate': dueDate,
-      }),
-    );
-    return response.statusCode == 200 || response.statusCode == 201;
-  }
-
   // ✅ Fetch Homework
   Future<List<Map<String, dynamic>>> fetchHomework(String standardId) async {
     final response = await http.get(
@@ -583,13 +584,17 @@ class ApiService {
       if (data == null) return [];
       List<Map<String, dynamic>> homeworkList = [];
       data.forEach((subject, details) {
-        homeworkList.add({
-          'id': subject,
-          'subject': subject,
-          'title': details['title'] ?? 'No Title',
-          'description': details['description'] ?? 'No Description',
-          'dueDate': details['dueDate'] ?? 'No Due Date',
-        });
+        if (details is Map<String, dynamic>) {
+          details.forEach((key, hwData) {
+            homeworkList.add({
+              'id': key,
+              'subject': subject,
+              'title': hwData['title'] ?? 'No Title',
+              'description': hwData['description'] ?? 'No Description',
+              'dueDate': hwData['dueDate'] ?? 'No Due Date',
+            });
+          });
+        }
       });
       return homeworkList;
     } else {
@@ -597,11 +602,26 @@ class ApiService {
     }
   }
 
-  // ✅ Delete Homework
-  Future<bool> deleteHomework(String homeworkId) async {
-    final response = await http.delete(
-      Uri.parse("$baseUrl/homework/$homeworkId.json"),
-    );
-    return response.statusCode == 200 || response.statusCode == 204;
+ Future<bool> deleteHomework(String homeworkId) async {
+    final String url = "$baseUrl/homework/$homeworkId.json"; // ✅ Append .json
+
+    print("🔗 Sending DELETE request to: $url"); // Debug log
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+
+      print("📝 Firebase Response: ${response.body}"); // Debug log
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("✅ Homework deleted successfully!");
+        return true;
+      } else {
+        print("❌ Error deleting homework: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("❌ Exception: $e");
+      return false;
+    }
   }
 }

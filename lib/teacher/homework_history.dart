@@ -101,7 +101,7 @@ class _HomeworkHistoryScreenState extends State<HomeworkHistoryScreen> {
     // If user cancels, stop function execution
     if (!confirmDelete) return;
 
-    bool success = await apiService.deleteHomework(homeworkId);
+    bool success = await apiService.deleteHomework(homeworkId,);
 
     if (success) {
       setState(() {

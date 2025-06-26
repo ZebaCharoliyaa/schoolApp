@@ -32,7 +32,7 @@ class Menu extends StatelessWidget {
       'label': 'Notice Board',
       'page': AdminNoticeBoard()
     },
-    {'icon': Icons.person_add, 'label': 'Add Student', 'page': StudentScreen()},
+    // {'icon': Icons.person_add, 'label': 'Add Student', 'page': StudentScreen()},
   ];
 
   Menu({super.key});

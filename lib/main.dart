@@ -169,28 +169,131 @@
 //     );
 //   }
 // }
+
+//--------------------without notification-------------------------//
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:flutter/material.dart';
+// import 'package:school/accountselection.dart';
+// import 'package:school/dashboard.dart';
+// import 'package:school/principle/dashboard.dart';
+// import 'package:school/services/auth_service.dart';
+// import 'package:school/teacher/menu.dart';
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   try {
+//     await Firebase.initializeApp();
+//     print("✅ Firebase Initialized Successfully!");
+
+//     String? role =
+//         await AuthService.getUserRole(); // 🔍 Get previously saved role
+//     print("🔍 Retrieved Role: $role");
+
+//     runApp(MyApp(startScreen: role));
+//   } catch (e) {
+//     print("❌ Error initializing Firebase: $e");
+//   }
+// }
+
+// class MyApp extends StatelessWidget {
+//   final String? startScreen;
+
+//   const MyApp({super.key, this.startScreen});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: 'School App',
+//       theme: ThemeData(
+//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+//         useMaterial3: true,
+//       ),
+//       home: _getInitialScreen(),
+//     );
+//   }
+
+//   Widget _getInitialScreen() {
+//     switch (startScreen) {
+//       case 'Student':
+//         return FirstPage();
+//       case 'Teacher':
+//         return Menu();
+//       case 'Principal':
+//         return TeacherDashboard();
+//       default:
+//         return RoleSelectionScreen(); // First time or after logout
+//     }
+//   }
+// }
+
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:school/accountselection.dart';
 import 'package:school/dashboard.dart';
 import 'package:school/principle/dashboard.dart';
 import 'package:school/services/auth_service.dart';
 import 'package:school/teacher/menu.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+// 🔁 For background notifications
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("📩 Background Message: ${message.notification?.title}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
     await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
     print("✅ Firebase Initialized Successfully!");
 
-    String? role =
-        await AuthService.getUserRole(); // 🔍 Get previously saved role
+    // 🔐 Get role and initialize FCM
+    String? role = await AuthService.getUserRole();
     print("🔍 Retrieved Role: $role");
+
+    await setupFCM(role); // 🔔 Save FCM Token to Firebase
 
     runApp(MyApp(startScreen: role));
   } catch (e) {
     print("❌ Error initializing Firebase: $e");
+  }
+}
+
+// 🔔 Save FCM token for student only
+Future<void> setupFCM(String? role) async {
+  if (role != "Student") return;
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    String? token = await messaging.getToken();
+    print("✅ FCM Token: $token");
+
+    // 🔄 Save token to Realtime Database
+    final studentId = await AuthService.getStudentId(); // 🔐 Get ID from auth
+    final standard = await AuthService.getStudentStandard(); // 🔐 Get Standard
+
+    if (studentId != null && standard != null && token != null) {
+      DatabaseReference ref = FirebaseDatabase.instance.ref();
+      await ref
+          .child("students/$standard/$studentId/fcmToken")
+          .set(token);
+      print("🔄 FCM token saved in DB");
+    }
+  } else {
+    print("🚫 FCM permission not granted");
   }
 }
 
