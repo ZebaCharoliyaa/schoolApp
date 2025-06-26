@@ -239,7 +239,9 @@ import 'package:school/services/auth_service.dart';
 import 'package:school/teacher/menu.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-// 🔁 For background notifications
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// 🔁 Background notifications handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("📩 Background Message: ${message.notification?.title}");
@@ -254,15 +256,17 @@ void main() async {
 
     print("✅ Firebase Initialized Successfully!");
 
-    // 🔐 Get role and initialize FCM
+    // 🔐 Get user role
     String? role = await AuthService.getUserRole();
     print("🔍 Retrieved Role: $role");
 
-    await setupFCM(role); // 🔔 Save FCM Token to Firebase
+    // 🔔 Save token if student
+    await setupFCM(role);
 
     runApp(MyApp(startScreen: role));
   } catch (e) {
     print("❌ Error initializing Firebase: $e");
+    runApp( MaterialApp(home: RoleSelectionScreen()));
   }
 }
 
@@ -271,6 +275,7 @@ Future<void> setupFCM(String? role) async {
   if (role != "Student") return;
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     badge: true,
@@ -281,15 +286,12 @@ Future<void> setupFCM(String? role) async {
     String? token = await messaging.getToken();
     print("✅ FCM Token: $token");
 
-    // 🔄 Save token to Realtime Database
-    final studentId = await AuthService.getStudentId(); // 🔐 Get ID from auth
-    final standard = await AuthService.getStudentStandard(); // 🔐 Get Standard
+    final studentId = await AuthService.getStudentId();
+    final standard = await AuthService.getStudentStandard();
 
     if (studentId != null && standard != null && token != null) {
       DatabaseReference ref = FirebaseDatabase.instance.ref();
-      await ref
-          .child("students/$standard/$studentId/fcmToken")
-          .set(token);
+      await ref.child("students/$standard/$studentId/fcmToken").set(token);
       print("🔄 FCM token saved in DB");
     }
   } else {
@@ -297,15 +299,54 @@ Future<void> setupFCM(String? role) async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final String? startScreen;
 
   const MyApp({super.key, this.startScreen});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    // 🔔 Foreground notification handling
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('📲 Foreground message received: ${message.notification?.title}');
+      if (message.notification != null) {
+        showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (_) => AlertDialog(
+            title: Text(message.notification!.title ?? 'Notification'),
+            content:
+                Text(message.notification!.body ?? 'You have a new message'),
+            actions: [
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () =>
+                    Navigator.of(navigatorKey.currentContext!).pop(),
+              )
+            ],
+          ),
+        );
+      }
+    });
+
+    // 📨 On notification tap
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('📬 Notification opened: ${message.notification?.title}');
+      // Optionally navigate to a specific screen
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       title: 'School App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -316,7 +357,7 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _getInitialScreen() {
-    switch (startScreen) {
+    switch (widget.startScreen) {
       case 'Student':
         return FirstPage();
       case 'Teacher':
@@ -324,7 +365,7 @@ class MyApp extends StatelessWidget {
       case 'Principal':
         return TeacherDashboard();
       default:
-        return RoleSelectionScreen(); // First time or after logout
+        return  RoleSelectionScreen();
     }
   }
 }
